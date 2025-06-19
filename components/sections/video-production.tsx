@@ -175,7 +175,7 @@ const VideoProduction = () => {
       // Pin the left text during the entire image section
       const pinTrigger = ScrollTrigger.create({
         trigger: firstImage,
-        start: "top 0%", // Start pinning when first image is 20% from top
+        start: "top 20%", // Start pinning when first image is 20% from top
         endTrigger: lastImage,
         end: "bottom 80%", // Stop pinning when last image is 80% from top
         pin: leftTextElement,
@@ -300,7 +300,10 @@ const VideoProduction = () => {
 
       <div className="grid lg:grid-cols-2 gap-0">
         {/* Left Side - Pinned Text Content */}
-        <div ref={leftTextRef} className="lg:sticky lg:top-0 h-screen flex items-center justify-center px-6 lg:px-12">
+        <div
+          ref={leftTextRef}
+          className="lg:sticky lg:top-0 h-screen flex items-start justify-center px-6 lg:px-12 pt-16"
+        >
           <div className="w-full max-w-lg">
             <AnimatePresence mode="wait">
               <motion.div
