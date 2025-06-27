@@ -105,9 +105,16 @@ const VideoPlayer = React.memo(({ media, index }: { media: any; index: number })
   const [isHovering, setIsHovering] = useState(false)
   const [isInView, setIsInView] = useState(false)
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Intersection Observer to detect when video comes into view
   useEffect(() => {
+    if (!isMounted) return
+
     const container = containerRef.current
     if (!container) return
 
@@ -137,10 +144,12 @@ const VideoPlayer = React.memo(({ media, index }: { media: any; index: number })
     return () => {
       observer.disconnect()
     }
-  }, [media.coverImage])
+  }, [media.coverImage, isMounted])
 
   /* ── autoplay for videos without a cover when in view ────────────────────────── */
   useEffect(() => {
+    if (!isMounted) return
+
     const video = videoRef.current
     if (!video || !isInView || hasStartedPlaying) return
 
@@ -157,10 +166,11 @@ const VideoPlayer = React.memo(({ media, index }: { media: any; index: number })
       }
       playVideo()
     }
-  }, [isInView, media.coverImage, hasStartedPlaying])
+  }, [isInView, media.coverImage, hasStartedPlaying, isMounted])
 
   /* ── hover-to-play handling for videos WITH a cover ─────────────── */
   const handleMouseEnter = () => {
+    if (!isMounted) return
     setIsHovering(true)
     if (!media.coverImage) return
 
@@ -174,6 +184,7 @@ const VideoPlayer = React.memo(({ media, index }: { media: any; index: number })
   }
 
   const handleMouseLeave = () => {
+    if (!isMounted) return
     setIsHovering(false)
     if (!media.coverImage) return
 
@@ -183,6 +194,14 @@ const VideoPlayer = React.memo(({ media, index }: { media: any; index: number })
     video.pause()
     video.currentTime = 0
     setShowCover(true)
+  }
+
+  if (!isMounted) {
+    return (
+      <div className="relative w-full h-full overflow-hidden bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-400 text-sm">Loading...</div>
+      </div>
+    )
   }
 
   return (
@@ -252,6 +271,12 @@ VideoPlayer.displayName = "VideoPlayer"
 
 // ───────────────────────── Media Grid Component (Stable) ──────────────────────────
 const MediaGrid = React.memo(() => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const allMedia = [
     // Websites section (3 images: 0-2)
     {
@@ -407,6 +432,27 @@ const MediaGrid = React.memo(() => {
 
   const sections = [{ title: "Websites" }, { title: "Video Production" }, { title: "Branded" }, { title: "Events" }]
 
+  if (!isMounted) {
+    return (
+      <div className="px-6 lg:px-8">
+        <div className="py-12 space-y-12">
+          {allMedia.map((media, index) => (
+            <div
+              key={`media-${index}`}
+              className={`group cursor-pointer flex ${getHorizontalPosition(media.horizontalPosition)}`}
+            >
+              <div
+                className={`${getImageSize(media.size)} relative overflow-hidden bg-gray-900 flex items-center justify-center`}
+              >
+                <div className="text-gray-400 text-sm">Loading...</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="px-6 lg:px-8">
       <div className="py-12 space-y-12">
@@ -488,8 +534,13 @@ MediaGrid.displayName = "MediaGrid"
 const ChannelManagementSection = () => {
   const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
   const [isHoveringButton, setIsHoveringButton] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Cursor tracking with smooth interpolation
   const cursorX = useMotionValue(0)
@@ -519,11 +570,13 @@ const ChannelManagementSection = () => {
   ]
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isMounted) return
     cursorX.set(e.clientX - 160) // Half of thumbnail width (320px / 2)
     cursorY.set(e.clientY - 120) // Half of thumbnail height (240px / 2)
   }
 
   const showThumbnail = (channelName: string) => {
+    if (!isMounted) return
     // Clear any pending hide timeout
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current)
@@ -533,6 +586,7 @@ const ChannelManagementSection = () => {
   }
 
   const hideThumbnail = () => {
+    if (!isMounted) return
     // Clear any existing timeout
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current)
@@ -548,6 +602,7 @@ const ChannelManagementSection = () => {
   }
 
   const handleButtonEnter = () => {
+    if (!isMounted) return
     // Clear hide timeout when entering button
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current)
@@ -557,6 +612,7 @@ const ChannelManagementSection = () => {
   }
 
   const handleButtonLeave = () => {
+    if (!isMounted) return
     setIsHoveringButton(false)
     setHoveredChannel(null)
   }
@@ -569,6 +625,39 @@ const ChannelManagementSection = () => {
       }
     }
   }, [])
+
+  if (!isMounted) {
+    return (
+      <section className="mt-32 mx-6 relative">
+        <div className="text-center mb-20">
+          <h3 className="text-4xl md:text-5xl font-bold mb-6">
+            Channel Management &{" "}
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Optimization
+            </span>
+          </h3>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Strategic content management and optimization for leading YouTube channels
+          </p>
+        </div>
+        <div className="max-w-4xl mx-auto space-y-12">
+          {channels.map((channel, index) => (
+            <div key={channel.name} className="relative group cursor-pointer">
+              <div className="flex items-center justify-between py-8 px-6 border-b border-white/10">
+                <div>
+                  <h4 className="text-5xl md:text-6xl lg:text-7xl font-bold font-serif tracking-tight leading-none">
+                    {channel.name}
+                  </h4>
+                  <p className="text-gray-400 text-lg mt-2">{channel.description}</p>
+                </div>
+                <div className="text-2xl text-gray-400">→</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   return (
     <motion.section
@@ -733,12 +822,17 @@ const Portfolio = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const leftTextRef = useRef<HTMLDivElement>(null)
   const [currentStep, setCurrentStep] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    if (!containerRef.current || !leftTextRef.current) return
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted || !containerRef.current || !leftTextRef.current) return
 
     // Wait for DOM to be ready
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       const leftTextElement = leftTextRef.current
       const firstImage = document.querySelector(`[data-image-index="0"]`)
       const lastImage = document.querySelector(`[data-image-index="10"]`)
@@ -753,12 +847,11 @@ const Portfolio = () => {
         end: "bottom 80%",
         pin: leftTextElement,
         pinSpacing: false,
-        markers: true,
         id: "pin-left-text",
       })
 
       // Create individual triggers for content changes
-      const imageTriggers = []
+      const imageTriggers: any[] = []
 
       // Default to Websites at start
       setCurrentStep(0)
@@ -774,7 +867,6 @@ const Portfolio = () => {
             onEnter: () => setCurrentStep(1),
             onEnterBack: () => setCurrentStep(1),
             onLeaveBack: () => setCurrentStep(0),
-            markers: true,
             id: "video-production-trigger",
           }),
         )
@@ -791,13 +883,12 @@ const Portfolio = () => {
             onEnter: () => setCurrentStep(2),
             onEnterBack: () => setCurrentStep(2),
             onLeaveBack: () => setCurrentStep(1),
-            markers: true,
             id: "branded-trigger",
           }),
         )
       }
 
-      // Events trigger - Updated to index 10 (was 9)
+      // Events trigger
       const eventsTrigger = document.querySelector(`[data-image-index="10"]`)
       if (eventsTrigger) {
         imageTriggers.push(
@@ -807,7 +898,6 @@ const Portfolio = () => {
             onEnter: () => setCurrentStep(3),
             onEnterBack: () => setCurrentStep(3),
             onLeaveBack: () => setCurrentStep(2),
-            markers: true,
             id: "events-trigger",
           }),
         )
@@ -817,10 +907,49 @@ const Portfolio = () => {
 
       return () => {
         pinTrigger.kill()
-        imageTriggers.forEach((trigger) => trigger?.kill())
+        imageTriggers.forEach((trigger) => {
+          if (trigger && typeof trigger.kill === "function") {
+            trigger.kill()
+          }
+        })
       }
     }, 100)
-  }, [])
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [isMounted])
+
+  if (!isMounted) {
+    return (
+      <section className="relative bg-black text-white">
+        {/* Header */}
+        <div className="py-32 text-center">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6">
+            Our{" "}
+            <span className="bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">Portfolio</span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Showcasing our expertise across digital experiences, video production, and brand storytelling
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-[1fr_2fr] gap-0">
+          {/* Left Side - Static Text Content */}
+          <div className="lg:sticky lg:top-0 h-screen flex items-start justify-center px-4 lg:px-6 pt-16">
+            <LeftTextContent currentStep={0} />
+          </div>
+
+          {/* Right Side - Loading State */}
+          <div className="px-6 lg:px-8">
+            <div className="py-12 space-y-12">
+              <div className="text-center text-gray-400">Loading portfolio...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section ref={containerRef} className="relative bg-black text-white">
@@ -853,7 +982,7 @@ const Portfolio = () => {
           <LeftTextContent currentStep={currentStep} />
         </div>
 
-        {/* Right Side - Scrolling Media (Stable) */}
+        {/* Right Side - Scrolling Media */}
         <MediaGrid />
       </div>
 

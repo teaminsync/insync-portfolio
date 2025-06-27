@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useEffect, useState } from "react"
+import { motion, useScroll } from "framer-motion"
 import Hero from "@/components/sections/hero"
 import About from "@/components/sections/about"
 import Services from "@/components/sections/services"
@@ -11,30 +11,30 @@ import Contact from "@/components/sections/contact"
 import Footer from "@/components/sections/footer"
 import Navigation from "@/components/navigation"
 import CustomCursor from "@/components/custom-cursor"
-import SmoothScroll from "@/components/smooth-scroll"
-import TravelingCardSystem from "@/components/traveling-card-system"
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0])
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    // Disable default cursor
-    document.body.style.cursor = "none"
-    return () => {
-      document.body.style.cursor = "auto"
-    }
+    setIsMounted(true)
   }, [])
 
-  return (
-    <SmoothScroll>
+  useEffect(() => {
+    if (!isMounted) return
+
+    // Add CSS class to hide cursor instead of inline styles
+    document.body.classList.add("custom-cursor-active")
+
+    return () => {
+      document.body.classList.remove("custom-cursor-active")
+    }
+  }, [isMounted])
+
+  if (!isMounted) {
+    return (
       <div className="bg-black text-white overflow-hidden">
-        <CustomCursor />
         <Navigation />
-
-        {/* Global Traveling Card System */}
-        <TravelingCardSystem />
-
         <main>
           <Hero />
           <About />
@@ -43,15 +43,32 @@ export default function Home() {
           <Process />
           <Contact />
         </main>
-
         <Footer />
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50 origin-left"
-          style={{ scaleX: scrollYProgress }}
-        />
       </div>
-    </SmoothScroll>
+    )
+  }
+
+  return (
+    <div className="bg-black text-white overflow-hidden">
+      <CustomCursor />
+      <Navigation />
+
+      <main>
+        <Hero />
+        <About />
+        <Services />
+        <Portfolio />
+        <Process />
+        <Contact />
+      </main>
+
+      <Footer />
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50 origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+    </div>
   )
 }

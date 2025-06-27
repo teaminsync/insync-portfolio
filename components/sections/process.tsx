@@ -77,7 +77,7 @@ const Process = () => {
   }, [])
 
   // Calculate which dots should be visible based on rotation
-  const getDotVisibility = (dotPosition, currentRotation) => {
+  const getDotVisibility = (dotPosition: number, currentRotation: number) => {
     // Calculate the actual angle after rotation
     const actualAngle = (dotPosition - currentRotation) % 360
     // Normalize to 0-359 range
@@ -130,7 +130,12 @@ const Process = () => {
               viewBox="0 0 1500 1500"
               className="absolute left-1/2 top-0 transform -translate-x-1/2"
             >
-              <path d="M 150 750 A 600 600 0 0 1 1350 750" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
+              <path
+                d="M 150 750 A 600 600 0 0 1 1350 750"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                strokeWidth="2"
+              />
             </svg>
 
             {/* Rotating dots container */}
@@ -143,8 +148,9 @@ const Process = () => {
                 {/* Dot 1 - 0° (Top) */}
                 <div className="absolute left-1/2 top-0 transform -translate-x-1/2">
                   <div
-                    className={`w-4 h-4 rounded-full ${currentStep === 0 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
-                      } transition-all duration-300`}
+                    className={`w-4 h-4 rounded-full ${
+                      currentStep === 0 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                    } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(0, currentStep * 90).opacity,
                     }}
@@ -154,8 +160,9 @@ const Process = () => {
                 {/* Dot 2 - 90° (Right) */}
                 <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
                   <div
-                    className={`w-4 h-4 rounded-full ${currentStep === 1 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
-                      } transition-all duration-300`}
+                    className={`w-4 h-4 rounded-full ${
+                      currentStep === 1 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                    } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(90, currentStep * 90).opacity,
                     }}
@@ -165,8 +172,9 @@ const Process = () => {
                 {/* Dot 3 - 180° (Bottom) */}
                 <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2">
                   <div
-                    className={`w-4 h-4 rounded-full ${currentStep === 2 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
-                      } transition-all duration-300`}
+                    className={`w-4 h-4 rounded-full ${
+                      currentStep === 2 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                    } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(180, currentStep * 90).opacity,
                     }}
@@ -176,8 +184,9 @@ const Process = () => {
                 {/* Dot 4 - 270° (Left) */}
                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2">
                   <div
-                    className={`w-4 h-4 rounded-full ${currentStep === 3 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
-                      } transition-all duration-300`}
+                    className={`w-4 h-4 rounded-full ${
+                      currentStep === 3 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                    } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(270, currentStep * 90).opacity,
                     }}
@@ -425,10 +434,7 @@ const Process = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.6, ease: "easeInOut" }}
                       >
-                        <div
-                          style={{ transform: "rotate(180deg)" }}
-                          className="w-72 text-center"
-                        >
+                        <div style={{ transform: "rotate(180deg)" }} className="w-72 text-center">
                           <h3 className="text-2xl font-bold text-white mb-2">{steps[2].title}</h3>
                           <p className="text-lg text-gray-300 leading-relaxed">{steps[2].description}</p>
                         </div>
@@ -439,10 +445,7 @@ const Process = () => {
 
                 {/* Description 4 */}
                 <div className="absolute left-0 top-1/2 transform translate-x-[10rem] -translate-y-1/2">
-                  <motion.div
-                    animate={{ rotate: -currentStep * 90 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                  >
+                  <motion.div animate={{ rotate: -currentStep * 90 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                     <motion.div
                       animate={{ rotate: currentStep * 90 + 270 }}
                       transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -457,12 +460,8 @@ const Process = () => {
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                             className="w-72 text-center"
                           >
-                            <h3 className="text-2xl font-bold text-white mb-2">
-                              {steps[3].title}
-                            </h3>
-                            <p className="text-lg text-gray-300 leading-relaxed">
-                              {steps[3].description}
-                            </p>
+                            <h3 className="text-2xl font-bold text-white mb-2">{steps[3].title}</h3>
+                            <p className="text-lg text-gray-300 leading-relaxed">{steps[3].description}</p>
                           </motion.div>
                         )}
                       </AnimatePresence>

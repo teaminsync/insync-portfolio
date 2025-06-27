@@ -44,13 +44,9 @@ const Hero = () => {
     <section
       ref={containerRef}
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative bg-[#F9F4EB] min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Animated Background */}
-      <motion.div
-        style={{ y, opacity }}
-        className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20"
-      />
+
 
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px]" />
@@ -91,11 +87,9 @@ const Hero = () => {
                 key={word}
                 custom={i}
                 variants={textVariants}
-                className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none"
+                className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none text-black"
               >
-                <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-                  {word}
-                </span>
+                {word}
               </motion.h1>
             ))}
           </div>

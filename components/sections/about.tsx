@@ -27,15 +27,8 @@ const About = () => {
     }),
   }
 
-  const stats = [
-    { number: "50+", label: "Projects Delivered" },
-    { number: "25+", label: "Happy Clients" },
-    { number: "3+", label: "Years Experience" },
-    { number: "100%", label: "Client Satisfaction" },
-  ]
-
   return (
-    <section ref={containerRef} id="about" className="relative py-32 bg-gradient-to-b from-black to-gray-900">
+    <section ref={containerRef} id="about" className="relative py-32 bg-black">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div style={{ y }} className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Text Content */}
@@ -64,24 +57,6 @@ const About = () => {
                 help your brand succeed.
               </motion.p>
             </div>
-          </motion.div>
-
-          {/* Stats Grid */}
-          <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} className="grid grid-cols-2 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                custom={index + 4}
-                variants={textVariants}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="text-center p-6 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl backdrop-blur-sm border border-white/10"
-              >
-                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-400 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
           </motion.div>
         </motion.div>
       </div>
