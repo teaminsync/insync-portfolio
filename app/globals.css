@@ -101,3 +101,130 @@ body {
 .custom-cursor-active * {
   cursor: none !important;
 }
+
+/* Scrolling Text Animation - Smooth Continuous Rebound */
+.text-scroll-container {
+  height: clamp(2.2rem, 5.5vw, 4.4rem);
+  overflow: hidden;
+  width: 100%;
+}
+
+.text-scroll-list {
+  height: calc(clamp(2.2rem, 5.5vw, 4.4rem) * 5);
+  width: 100%;
+  list-style: none;
+  animation: scroll-words-bounce 12s ease-in-out infinite;
+  margin: 0;
+  padding: 0;
+}
+
+.text-scroll-list li {
+  height: clamp(2.2rem, 5.5vw, 4.4rem);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
+@keyframes scroll-words-bounce {
+  /* "Websites" - Hold position */
+  0%,
+  16% {
+    transform: translateY(0);
+  }
+
+  /* Smooth transition to "Brand Videos" with rebound */
+  19% {
+    transform: translateY(calc(0.1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Gentle dip */
+  }
+  22% {
+    transform: translateY(calc(-1.1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Overshoot */
+  }
+  24% {
+    transform: translateY(calc(-1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Settle */
+  }
+
+  /* "Brand Videos" - Hold position */
+  24%,
+  40% {
+    transform: translateY(calc(-1 * clamp(2.2rem, 5.5vw, 4.4rem)));
+  }
+
+  /* Smooth transition to "Strategic Content" with rebound */
+  43% {
+    transform: translateY(calc(-0.9 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Gentle dip */
+  }
+  46% {
+    transform: translateY(calc(-2.1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Overshoot */
+  }
+  48% {
+    transform: translateY(calc(-2 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Settle */
+  }
+
+  /* "Strategic Content" - Hold position */
+  48%,
+  64% {
+    transform: translateY(calc(-2 * clamp(2.2rem, 5.5vw, 4.4rem)));
+  }
+
+  /* Smooth transition to "Personal Brands" with rebound */
+  67% {
+    transform: translateY(calc(-1.9 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Gentle dip */
+  }
+  70% {
+    transform: translateY(calc(-3.1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Overshoot */
+  }
+  72% {
+    transform: translateY(calc(-3 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Settle */
+  }
+
+  /* "Personal Brands" - Hold position */
+  72%,
+  88% {
+    transform: translateY(calc(-3 * clamp(2.2rem, 5.5vw, 4.4rem)));
+  }
+
+  /* Smooth transition back to "Websites" (5th item) with rebound */
+  91% {
+    transform: translateY(calc(-2.9 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Gentle dip */
+  }
+  94% {
+    transform: translateY(calc(-4.1 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Overshoot */
+  }
+  96% {
+    transform: translateY(calc(-4 * clamp(2.2rem, 5.5vw, 4.4rem))); /* Settle */
+  }
+
+  /* Complete cycle - back to start */
+  96%,
+  100% {
+    transform: translateY(calc(-4 * clamp(2.2rem, 5.5vw, 4.4rem)));
+  }
+}
+
+/* Portfolio Text Scrolling Animation */
+.portfolio-text-scroll-container {
+  height: clamp(2.2rem, 5.5vw, 4.4rem);
+  overflow: hidden;
+  width: 100%;
+}
+
+.portfolio-text-scroll-list {
+  height: calc(clamp(2.2rem, 5.5vw, 4.4rem) * 5);
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.portfolio-text-scroll-list li {
+  height: clamp(2.2rem, 5.5vw, 4.4rem);
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+}

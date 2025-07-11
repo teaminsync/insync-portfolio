@@ -2,10 +2,11 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { ArrowRight, Play } from "lucide-react"
+import { Play } from "lucide-react"
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null)
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -15,7 +16,7 @@ const Hero = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
   const textVariants = {
-    hidden: { opacity: 0, y: 100 },
+    hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
@@ -44,115 +45,74 @@ const Hero = () => {
     <section
       ref={containerRef}
       id="home"
-      className="relative bg-[#F9F4EB] min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative bg-[#F9F4EB] min-h-[85vh] flex items-center justify-center overflow-hidden"
     >
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-12 items-center pt-24 sm:pt-28 md:pt-32 lg:pt-0 min-h-[calc(85vh-6rem)] sm:min-h-[calc(85vh-7rem)] md:min-h-[calc(85vh-8rem)] lg:min-h-[62vh]">
+          {/* Left Side - Text Content */}
+          <motion.div initial="hidden" animate="visible" className="text-left">
+            {/* Main Headline with Scrolling Animation */}
+            <motion.div custom={0} variants={textVariants} className="text-scroll-container">
+              <ul className="text-scroll-list">
+                <li>websites</li>
+                <li>brand videos</li>
+                <li>strategic content</li>
+                <li>personal brands</li>
+                <li>websites</li>
+              </ul>
+            </motion.div>
 
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px]" />
-
-      {/* Floating Elements */}
-      <motion.div
-        animate={{
-          y: [-20, 20, -20],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-        }}
-        className="absolute top-20 right-20 w-32 h-32 border border-blue-500/20 rounded-full"
-      />
-
-      <motion.div
-        animate={{
-          y: [20, -20, 20],
-          rotate: [360, 180, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-        }}
-        className="absolute bottom-20 left-20 w-24 h-24 border border-purple-500/20 rounded-full"
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-        <motion.div initial="hidden" animate="visible" className="space-y-8">
-          {/* Main Headline */}
-          <div className="space-y-4">
-            {["Innovate.", "Implement.", "Impact."].map((word, i) => (
-              <motion.h1
-                key={word}
-                custom={i}
-                variants={textVariants}
-                className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none text-black"
-              >
-                {word}
-              </motion.h1>
-            ))}
-          </div>
-
-          {/* Subheadline */}
-          <motion.p
-            custom={3}
-            variants={textVariants}
-            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
-          >
-            Strategy-led. Result-focused. <span className="text-blue-400">Always in sync</span> with your vision.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            variants={buttonVariants}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-lg font-semibold overflow-hidden"
+            {/* Subheadline with consistent spacing */}
+            <motion.p
+              custom={1}
+              variants={textVariants}
+              className="text-black max-w-2xl font-medium"
+              style={{
+                fontSize: "clamp(2rem, 5vw, 4rem)",
+                lineHeight: "1.15",
+                marginTop: "clamp(0.25rem, 0.6vw, 0.5rem)",
+              }}
             >
-              <span className="relative z-10 flex items-center gap-2">
-                See Our Work
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 border-2 border-white/20 rounded-full text-lg font-semibold hover:border-white/40 transition-colors"
-            >
-              <span className="flex items-center gap-2">
-                <Play className="w-5 h-5" />
-                Let's Build Together
-              </span>
-            </motion.button>
+              built to grow with your vision.
+            </motion.p>
           </motion.div>
-        </motion.div>
 
-        {/* Scroll Indicator */}
+          {/* Right Side - Medium-sized Media Placeholder */}
+          <div className="relative">
+            <div className="aspect-[4/5] max-w-md mx-auto bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center border border-gray-200">
+              <div className="text-center space-y-4">
+                <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto">
+                  <Play className="w-7 h-7 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-lg font-semibold text-gray-700">Hero Video/Image</p>
+                  <p className="text-sm text-gray-500">Placeholder for media content</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+          className="w-6 h-10 border-2 border-black/30 rounded-full flex justify-center"
         >
           <motion.div
-            animate={{ y: [0, 10, 0] }}
+            animate={{ y: [0, 16, 0] }}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
-          >
-            <motion.div
-              animate={{ y: [0, 16, 0] }}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-              className="w-1 h-3 bg-white/60 rounded-full mt-2"
-            />
-          </motion.div>
+            className="w-1 h-3 bg-black/60 rounded-full mt-2"
+          />
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   )
 }

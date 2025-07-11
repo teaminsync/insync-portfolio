@@ -102,10 +102,11 @@ const Process = () => {
   return (
     <section
       ref={containerRef}
+      id="process"
       className="relative bg-black text-white h-screen flex items-center justify-center overflow-hidden pt-12"
     >
       {/* Top-left heading */}
-      <div className="absolute top-20 left-12 z-10">
+      <div className="absolute top-20 lg:top-32 left-12 z-10">
         <motion.h2
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -114,7 +115,7 @@ const Process = () => {
         >
           How We
           <br />
-          <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Work</span>
+          <span className="bg-gradient-to-r from-[#F9F4EB] to-white bg-clip-text text-transparent">Work</span>
         </motion.h2>
       </div>
 
@@ -146,10 +147,10 @@ const Process = () => {
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
                 {/* Dot 1 - 0° (Top) */}
-                <div className="absolute left-1/2 top-0 transform -translate-x-1/2">
+                <div className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-2">
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      currentStep === 0 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                      currentStep === 0 ? "bg-[#E6A732] scale-125" : "bg-[#E6A732]/40"
                     } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(0, currentStep * 90).opacity,
@@ -158,10 +159,10 @@ const Process = () => {
                 </div>
 
                 {/* Dot 2 - 90° (Right) */}
-                <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2">
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      currentStep === 1 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                      currentStep === 1 ? "bg-[#E6A732] scale-125" : "bg-[#E6A732]/40"
                     } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(90, currentStep * 90).opacity,
@@ -170,10 +171,10 @@ const Process = () => {
                 </div>
 
                 {/* Dot 3 - 180° (Bottom) */}
-                <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2">
+                <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-2">
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      currentStep === 2 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                      currentStep === 2 ? "bg-[#E6A732] scale-125" : "bg-[#E6A732]/40"
                     } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(180, currentStep * 90).opacity,
@@ -182,10 +183,10 @@ const Process = () => {
                 </div>
 
                 {/* Dot 4 - 270° (Left) */}
-                <div className="absolute left-0 top-1/2 transform -translate-y-1/2">
+                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2">
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      currentStep === 3 ? "bg-blue-500 scale-125" : "bg-blue-500/40"
+                      currentStep === 3 ? "bg-[#E6A732] scale-125" : "bg-[#E6A732]/40"
                     } transition-all duration-300`}
                     style={{
                       opacity: getDotVisibility(270, currentStep * 90).opacity,
@@ -292,7 +293,7 @@ const Process = () => {
                           transition={{ duration: 0.6, ease: "easeInOut" }}
                           className="flex justify-center"
                         >
-                          <div className="w-0.5 h-48 bg-blue-400/70" />
+                          <div className="w-0.5 h-48 bg-white/70" />
                         </motion.div>
                       </motion.div>
                     )}
@@ -315,7 +316,7 @@ const Process = () => {
                           animate={{ rotate: currentStep * 90 }}
                           transition={{ duration: 0.6, ease: "easeInOut" }}
                         >
-                          <div className="w-48 h-0.5 bg-blue-400/70" />
+                          <div className="w-48 h-0.5 bg-white/70" />
                         </motion.div>
                       </motion.div>
                     )}
@@ -335,7 +336,7 @@ const Process = () => {
                         className="relative"
                       >
                         <div className="flex justify-center" style={{ transform: "rotate(180deg)" }}>
-                          <div className="w-0.5 h-48 bg-blue-400/70" />
+                          <div className="w-0.5 h-48 bg-white/70" />
                         </div>
                       </motion.div>
                     )}
@@ -353,7 +354,7 @@ const Process = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.6, ease: "easeInOut" }}
                       >
-                        <div className="w-48 h-0.5 bg-blue-400/70" />
+                        <div className="w-48 h-0.5 bg-white/70" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -384,8 +385,12 @@ const Process = () => {
                           transition={{ duration: 0.6, ease: "easeInOut" }}
                           className="w-72 text-center"
                         >
-                          <h3 className="text-2xl font-bold text-white mb-2">{steps[0].title}</h3>
-                          <p className="text-lg text-gray-300 leading-relaxed">{steps[0].description}</p>
+                          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+                            {steps[0].title}
+                          </h3>
+                          <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
+                            {steps[0].description}
+                          </p>
                         </motion.div>
                       </motion.div>
                     )}
@@ -414,8 +419,12 @@ const Process = () => {
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                             className="w-72 text-center"
                           >
-                            <h3 className="text-2xl font-bold text-white mb-2">{steps[1].title}</h3>
-                            <p className="text-lg text-gray-300 leading-relaxed">{steps[1].description}</p>
+                            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+                              {steps[1].title}
+                            </h3>
+                            <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
+                              {steps[1].description}
+                            </p>
                           </motion.div>
                         </motion.div>
                       </motion.div>
@@ -435,8 +444,12 @@ const Process = () => {
                         transition={{ duration: 0.6, ease: "easeInOut" }}
                       >
                         <div style={{ transform: "rotate(180deg)" }} className="w-72 text-center">
-                          <h3 className="text-2xl font-bold text-white mb-2">{steps[2].title}</h3>
-                          <p className="text-lg text-gray-300 leading-relaxed">{steps[2].description}</p>
+                          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+                            {steps[2].title}
+                          </h3>
+                          <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
+                            {steps[2].description}
+                          </p>
                         </div>
                       </motion.div>
                     )}
@@ -460,8 +473,12 @@ const Process = () => {
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                             className="w-72 text-center"
                           >
-                            <h3 className="text-2xl font-bold text-white mb-2">{steps[3].title}</h3>
-                            <p className="text-lg text-gray-300 leading-relaxed">{steps[3].description}</p>
+                            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+                              {steps[3].title}
+                            </h3>
+                            <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
+                              {steps[3].description}
+                            </p>
                           </motion.div>
                         )}
                       </AnimatePresence>
