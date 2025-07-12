@@ -1,11 +1,95 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, useState } from "react"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
+
+// Define the full set of decorative elements outside the component
+const decorativeElementsData = [
+  {
+    col: 0,
+    items: [
+      { top: "5%", size: 36, src: "elmnt1" },
+      { top: "45%", size: 32, src: "elmnt4" },
+      { top: "85%", size: 28, src: "elmnt2" },
+    ],
+  },
+  {
+    col: 1,
+    items: [
+      { top: "23%", size: 32, src: "elmnt3" },
+      { top: "60%", size: 36, src: "elmnt5" },
+    ],
+  },
+  {
+    col: 2,
+    items: [
+      { top: "5%", size: 36, src: "elmnt6" },
+      { top: "45%", size: 28, src: "elmnt1" },
+      { top: "85%", size: 32, src: "elmnt4" },
+    ],
+  },
+  {
+    col: 3,
+    items: [
+      { top: "20%", size: 36, src: "elmnt2" },
+      { top: "65%", size: 32, src: "elmnt6" },
+    ],
+  },
+  {
+    col: 4,
+    items: [
+      { top: "2%", size: 32, src: "elmnt3" },
+      { top: "40%", size: 36, src: "elmnt4" },
+      { top: "88%", size: 28, src: "elmnt1" },
+    ],
+  },
+  {
+    col: 5,
+    items: [
+      { top: "20%", size: 36, src: "elmnt5" },
+      { top: "60%", size: 32, src: "elmnt2" },
+    ],
+  },
+  {
+    col: 6,
+    items: [
+      { top: "2%", size: 36, src: "elmnt6" },
+      { top: "35%", size: 36, src: "elmnt3" },
+      { top: "80%", size: 32, src: "elmnt4" },
+    ],
+  },
+]
+
+// Define which column indices to show for each number of active columns
+const columnIndicesToShow = {
+  3: [0, 3, 6], // For 3 columns, show first, middle, and last
+  5: [0, 1, 2, 3, 4], // For 5 columns, show first, second, middle, second-to-last, last
+  7: [0, 1, 2, 3, 4, 5, 6], // For 7 columns, show all
+}
 
 const About = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+  const [activeColumns, setActiveColumns] = useState(7) // Default for desktop
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      if (width < 640) {
+        // Tailwind's 'sm' breakpoint
+        setActiveColumns(3)
+      } else if (width < 1024) {
+        // Tailwind's 'lg' breakpoint
+        setActiveColumns(5)
+      } else {
+        setActiveColumns(7)
+      }
+    }
+
+    handleResize() // Set initial value
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -27,18 +111,10 @@ const About = () => {
     }),
   }
 
-  const iconVariants = {
-    hidden: { opacity: 0, scale: 0 },
-    visible: (i: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: {
-        delay: 1.2 + i * 0.2,
-        duration: 0.8,
-        ease: "backOut",
-      },
-    }),
-  }
+  // Filter the columns to be rendered based on activeColumns
+  const columnsToRender = decorativeElementsData.filter((_, i) =>
+    columnIndicesToShow[activeColumns as keyof typeof columnIndicesToShow].includes(i),
+  )
 
   return (
     <div className="relative bg-[#F9F4EB] pt-6 sm:pt-8 md:pt-2">
@@ -53,6 +129,32 @@ const About = () => {
           borderBottomRightRadius: "60px 24px",
         }}
       >
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {columnsToRender.map((column, i) =>
+            column.items.map((e, j) => {
+              // Calculate left position based on the index within the *rendered* columns
+              // and the total number of active columns.
+              const leftPercentage = activeColumns > 1 ? (i / (activeColumns - 1)) * 100 : 50
+              return (
+                <div
+                  key={`col${column.col}-item${j}`} // Use original column index for unique key
+                  className="absolute opacity-20"
+                  style={{
+                    top: e.top,
+                    left: `${leftPercentage}%`,
+                    transform: "translateX(-50%)",
+                    width: `${e.size * 4}px`,
+                    height: `${e.size * 4}px`,
+                  }}
+                >
+                  <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
+                </div>
+              )
+            }),
+          )}
+        </div>
+
         {/* Content Container */}
         <div className="max-w-7xl mx-auto relative">
           <motion.div style={{ y }} className="grid lg:grid-cols-1 gap-16 items-center">
@@ -106,44 +208,6 @@ const About = () => {
                   />
                 </motion.div>
               </div>
-
-              {/* All Icons - Responsive scattered positioning */}
-              <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"}>
-                {/* Rocket Icon - Responsive positioning */}
-                <motion.div
-                  custom={0}
-                  variants={iconVariants}
-                  className="absolute 
-                    left-[-1rem] sm:left-[-1.5rem] md:left-[-2rem] lg:left-[-3.5rem] xl:left-[-4rem] 
-                    top-[35%] sm:top-[38%] md:top-[42%] lg:top-[45%] xl:top-[46%] 
-                    transform -translate-x-0 translate-y-0 -z-10"
-                >
-                  <img
-                    src="images/rocket.svg"
-                    alt="Rocket"
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-18 lg:h-18 xl:w-20 xl:h-20"
-                  />
-                </motion.div>
-
-                {/* Brain Icon - Responsive positioning */}
-                <motion.div
-                  custom={1}
-                  variants={iconVariants}
-                  className="absolute 
-                    right-[-0.5rem] sm:right-[-1rem] md:right-[-1.5rem] lg:right-[-2.5rem] xl:right-[-3rem] 
-                    top-[15%] sm:top-[12%] md:top-[10%] lg:top-[11%] xl:top-[12%] 
-                    transform 
-                    translate-x-8 sm:translate-x-10 md:translate-x-12 lg:translate-x-18 xl:translate-x-20 
-                    -translate-y-6 sm:-translate-y-8 md:-translate-y-10 lg:-translate-y-14 xl:-translate-y-16 
-                    -z-10"
-                >
-                  <img
-                    src="images/brain.svg"
-                    alt="Brain"
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-18 lg:h-18 xl:w-20 xl:h-20"
-                  />
-                </motion.div>
-              </motion.div>
 
               {/* Main Heading */}
               <motion.h2
