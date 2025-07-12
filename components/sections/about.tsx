@@ -62,7 +62,7 @@ const decorativeElementsData = [
 
 // Define which column indices to show for each number of active columns
 const columnIndicesToShow = {
-  3: [0, 3, 6], // For 3 columns, show first, middle, and last
+  3: [0, 1, 2], // For 3 columns, show first, middle, and last
   5: [0, 1, 2, 3, 4], // For 5 columns, show first, second, middle, second-to-last, last
   7: [0, 1, 2, 3, 4, 5, 6], // For 7 columns, show all
 }
