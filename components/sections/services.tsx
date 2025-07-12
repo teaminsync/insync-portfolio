@@ -19,7 +19,7 @@ const Services = () => {
 
   const services = [
     {
-      title: "WEB DEVELOPMENT",
+      title: "WEBSITE DEVELOPMENT",
       background: "#E5DAF6", // Soft lavender
       logo: "/images/webdev.svg",
       description:
@@ -233,26 +233,39 @@ const Services = () => {
             }}
           >
             {/* Top Strip - Responsive spacing */}
-            <div className="absolute top-4 left-4 right-4 md:top-6 md:left-6 md:right-6 flex items-center justify-between">
-              <h3 className="text-xs md:text-sm font-bold text-black leading-tight max-w-[140px] md:max-w-[180px]">
+            <div className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 flex items-center justify-between">
+              <h3 className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px]">
                 {service.title}
               </h3>
               <img
                 src={service.logo || "/placeholder.svg"}
                 alt={service.title}
-                className="w-3 h-3 md:w-4 md:h-4 object-contain"
+                className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
               />
             </div>
 
             {/* Bottom Strip - Responsive spacing */}
-            <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 flex items-center justify-between">
-              <img
-                src={service.logo || "/placeholder.svg"}
-                alt={service.title}
-                className="w-3 h-3 md:w-4 md:h-4 object-contain"
-              />
+            <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 flex items-end justify-between">
+              <div className="flex items-center gap-4">
+                {/* Service logo */}
+                <img
+                  src={service.logo || "/placeholder.svg"}
+                  alt={service.title}
+                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
+                />
+                <span className="text-[0.25rem] md:text-[0.35rem] font-medium text-black tracking-tight leading-none">
+                  BIZ - {101 + index}
+                </span>
+                {/* Placeholder for your InSync logo */}
+                <img
+                  src="images/logo.svg" // Use a small placeholder for your logo
+                  alt="InSync Logo"
+                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain" // Adjust size as needed
+                />
+              </div>
+
               <h3
-                className="text-xs md:text-sm font-bold text-black leading-tight max-w-[140px] md:max-w-[180px] text-right"
+                className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px] text-right"
                 style={{ transform: "rotate(180deg)" }}
               >
                 {service.title}
@@ -264,7 +277,7 @@ const Services = () => {
               <img
                 src={service.logo || "/placeholder.svg"}
                 alt={service.title}
-                className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                className="w-20 h-20 md:w-24 md:h-24 object-contain"
               />
             </div>
           </div>
@@ -291,20 +304,15 @@ const Services = () => {
 
               {/* Service Title */}
               <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-black leading-tight text-left">
-                  {service.title}
-                </h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-black leading-tight text-left">{service.title}</h3>
               </div>
             </div>
 
             {/* Bottom Section - Description */}
             <div className="text-left">
-              <p className="text-black/80 text-sm md:text-base leading-relaxed">
-                {service.description}
-              </p>
+              <p className="text-black/80 text-sm md:text-base leading-relaxed">{service.description}</p>
             </div>
           </div>
-
         </motion.div>
       </div>
     )
