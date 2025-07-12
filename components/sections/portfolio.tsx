@@ -133,7 +133,14 @@ const Portfolio = () => {
   }
 
   return (
-    <section ref={containerRef} id="portfolio" className="relative bg-black text-white">
+    <section
+      ref={containerRef}
+      id="portfolio"
+      className="relative bg-black text-white"
+      style={{
+        borderTopLeftRadius: "60px 24px",
+        borderTopRightRadius: "60px 24px",
+      }}>
       {/* Header */}
       <div className="py-32 text-center">
         <motion.div

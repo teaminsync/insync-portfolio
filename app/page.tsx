@@ -33,7 +33,7 @@ export default function Home() {
 
   if (!isMounted) {
     return (
-      <div className="bg-black text-white overflow-hidden">
+      <div className="bg-[#F9F4EB] text-white overflow-hidden">
         <Navigation />
         <main>
           <Hero />
@@ -49,7 +49,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-black text-white overflow-hidden">
+    <div className="bg-[#F9F4EB] text-white overflow-hidden">
       <CustomCursor />
       <Navigation />
 

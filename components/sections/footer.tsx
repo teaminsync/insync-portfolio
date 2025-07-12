@@ -38,7 +38,13 @@ const Footer = () => {
   ]
 
   return (
-    <footer className="relative bg-gradient-to-t from-gray-900 to-black border-t border-white/10">
+    <footer
+      className="relative bg-black text-white"
+      style={{
+        borderTopLeftRadius: "60px 24px",
+        borderTopRightRadius: "60px 24px",
+      }}
+    >
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-4 gap-12">
           {/* Brand */}

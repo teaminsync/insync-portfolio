@@ -248,6 +248,10 @@ const MediaGrid = React.memo(() => {
       }
     }
 
+    const borderThickness = "1px" // Made thinner
+    const cornerLength = "20%" // Length of the initial corner lines
+    const padding = "12px" // Increased distance from the media content
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -270,11 +274,71 @@ const MediaGrid = React.memo(() => {
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
           onClick={handleCursorClick}
+          style={{ padding: padding }} // Apply padding here
         >
           {/* Render Image or Video based on type */}
           {renderMediaContent(media, index)}
 
-          {/* Custom Animated Cursor - Made bigger (80x80px) */}
+          {/* Corner Borders - positioned relative to the padded container */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Top-left corner */}
+            <motion.div
+              className="absolute top-0 left-0 bg-white"
+              initial={{ width: cornerLength, height: borderThickness }}
+              animate={{ width: isHovering ? "100%" : cornerLength, height: borderThickness }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+            <motion.div
+              className="absolute top-0 left-0 bg-white"
+              initial={{ width: borderThickness, height: cornerLength }}
+              animate={{ width: borderThickness, height: isHovering ? "100%" : cornerLength }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+
+            {/* Top-right corner */}
+            <motion.div
+              className="absolute top-0 right-0 bg-white"
+              initial={{ width: cornerLength, height: borderThickness }}
+              animate={{ width: isHovering ? "100%" : cornerLength, height: borderThickness }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+            <motion.div
+              className="absolute top-0 right-0 bg-white"
+              initial={{ width: borderThickness, height: cornerLength }}
+              animate={{ width: borderThickness, height: isHovering ? "100%" : cornerLength }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+
+            {/* Bottom-left corner */}
+            <motion.div
+              className="absolute bottom-0 left-0 bg-white"
+              initial={{ width: cornerLength, height: borderThickness }}
+              animate={{ width: isHovering ? "100%" : cornerLength, height: borderThickness }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+            <motion.div
+              className="absolute bottom-0 left-0 bg-white"
+              initial={{ width: borderThickness, height: cornerLength }}
+              animate={{ width: borderThickness, height: isHovering ? "100%" : cornerLength }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+
+            {/* Bottom-right corner */}
+            <motion.div
+              className="absolute bottom-0 right-0 bg-white"
+              initial={{ width: cornerLength, height: borderThickness }}
+              animate={{ width: isHovering ? "100%" : cornerLength, height: borderThickness }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+            <motion.div
+              className="absolute bottom-0 right-0 bg-white"
+              initial={{ width: borderThickness, height: cornerLength }}
+              animate={{ width: borderThickness, height: isHovering ? "100%" : cornerLength }}
+              transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
+            />
+          </div>
+
+          {/* Custom Animated Cursor */}
           <AnimatePresence>
             {isHovering && (
               <motion.div
