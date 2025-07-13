@@ -7,13 +7,31 @@ const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(false) // New state for touch detection
 
   useEffect(() => {
     setIsMounted(true)
+
+    // Detect touch device
+    const checkTouchDevice = () => {
+      // Modern way to detect coarse pointer (touch screen)
+      if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+        setIsTouchDevice(true)
+      } else {
+        setIsTouchDevice(false)
+      }
+    }
+
+    checkTouchDevice() // Initial check
+    window.addEventListener("resize", checkTouchDevice) // Re-check on resize
+
+    return () => {
+      window.removeEventListener("resize", checkTouchDevice)
+    }
   }, [])
 
   useEffect(() => {
-    if (!isMounted) return
+    if (!isMounted || isTouchDevice) return // Don't add listeners if it's a touch device
 
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
@@ -39,9 +57,10 @@ const CustomCursor = () => {
         el.removeEventListener("mouseleave", handleMouseLeave)
       })
     }
-  }, [isMounted])
+  }, [isMounted, isTouchDevice]) // Re-run effect if isTouchDevice changes
 
-  if (!isMounted) {
+  if (!isMounted || isTouchDevice) {
+    // Don't render if not mounted or is a touch device
     return null
   }
 

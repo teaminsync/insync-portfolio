@@ -148,7 +148,7 @@ const ChannelManagementSection = () => {
       <div className="text-center mb-20">
         <motion.div ref={headerRef} initial="hidden" animate={isInView ? "visible" : "hidden"} className="text-center">
           <motion.h3 custom={0} variants={textVariants} className="text-4xl md:text-5xl font-bold mb-6">
-            Channel Management & Optimization
+            CHANNEL MANAGEMENT & OPTIMIZATION
           </motion.h3>
           <motion.p custom={1} variants={textVariants} className="text-xl text-gray-300 max-w-2xl mx-auto">
             Content strategy and optimization for top YouTube channels

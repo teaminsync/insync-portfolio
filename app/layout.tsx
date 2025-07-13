@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import SmoothScroll from "@/components/smooth-scroll"
 import ScrollRestoration from "@/components/scroll-restoration"
+import { Toaster } from "@/components/ui/toaster" // Import Toaster
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ScrollRestoration />
         <SmoothScroll>{children}</SmoothScroll>
+        <Toaster /> {/* Add Toaster component here */}
       </body>
     </html>
   )

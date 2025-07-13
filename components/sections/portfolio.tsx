@@ -157,7 +157,7 @@ const Portfolio = () => {
             OUR PORTFOLIO
           </motion.h2>
           <motion.p custom={1} variants={textVariants} className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            Showcasing our craft in digital, video, and brand storytelling.
+            Showcasing our craft in digital, video, and brand storytelling
           </motion.p>
         </motion.div>
       </div>

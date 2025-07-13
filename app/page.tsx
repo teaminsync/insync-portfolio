@@ -15,21 +15,42 @@ import CustomCursor from "@/components/custom-cursor"
 export default function Home() {
   const { scrollYProgress } = useScroll()
   const [isMounted, setIsMounted] = useState(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(false) // New state for touch detection
 
   useEffect(() => {
     setIsMounted(true)
+
+    // Detect touch device
+    const checkTouchDevice = () => {
+      if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+        setIsTouchDevice(true)
+      } else {
+        setIsTouchDevice(false)
+      }
+    }
+
+    checkTouchDevice() // Initial check
+    window.addEventListener("resize", checkTouchDevice) // Re-check on resize
+
+    return () => {
+      window.removeEventListener("resize", checkTouchDevice)
+    }
   }, [])
 
   useEffect(() => {
     if (!isMounted) return
 
-    // Add CSS class to hide cursor instead of inline styles
-    document.body.classList.add("custom-cursor-active")
+    // Only add the custom-cursor-active class if it's NOT a touch device
+    if (!isTouchDevice) {
+      document.body.classList.add("custom-cursor-active")
+    } else {
+      document.body.classList.remove("custom-cursor-active")
+    }
 
     return () => {
       document.body.classList.remove("custom-cursor-active")
     }
-  }, [isMounted])
+  }, [isMounted, isTouchDevice]) // Re-run effect if isTouchDevice changes
 
   if (!isMounted) {
     return (
@@ -50,7 +71,8 @@ export default function Home() {
 
   return (
     <div className="bg-[#F9F4EB] text-white overflow-hidden">
-      <CustomCursor />
+      {/* Conditionally render CustomCursor */}
+      {!isTouchDevice && <CustomCursor />}
       <Navigation />
 
       <main>
