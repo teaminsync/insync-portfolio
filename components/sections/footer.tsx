@@ -52,7 +52,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="lg:col-span-2 ml-2"
+            className="lg:col-span-2 mx-2"
           >
             <motion.div className="text-3xl font-bold mb-4">
               insync<span className="text-white">.</span>
@@ -127,7 +127,7 @@ const Footer = () => {
                 Phone: +91 9082210545
               </motion.a>
               <motion.a
-                href="https://instagram.com/insync.solutions"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block hover:text-white transition-colors duration-300"
