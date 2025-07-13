@@ -392,7 +392,7 @@ const Services = () => {
 
   // Desktop/Tablet layout - horizontal scroll
   return (
-    <section ref={containerRef} id="services" className="relative bg-[#F9F4EB] min-h-screen">
+    <section ref={containerRef} id="services" className="relative bg-[#F9F4EB] min-h-screen sticky top-0 z-10">
       {/* Header Section */}
       <div className="relative z-10 pt-16 pb-4 md:pt-20 md:pb-6 bg-[#F9F4EB]">
         <motion.div
@@ -423,6 +423,7 @@ const Services = () => {
             style={{
               width: "max-content",
               height: "450px",
+              marginRight: "400px"
             }}
           >
             {services.map((service, index) => (

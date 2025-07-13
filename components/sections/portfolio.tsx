@@ -136,11 +136,12 @@ const Portfolio = () => {
     <section
       ref={containerRef}
       id="portfolio"
-      className="relative bg-black text-white"
+      className="relative bg-black text-white z-20 mt-0 sm:-mt-[100vh]" // Added z-20 and -mt-[100vh]
       style={{
         borderTopLeftRadius: "60px 24px",
         borderTopRightRadius: "60px 24px",
-      }}>
+      }}
+    >
       {/* Header */}
       <div className="py-32 text-center">
         <motion.div
@@ -149,14 +150,8 @@ const Portfolio = () => {
           animate={isMounted && isInView ? "visible" : "hidden"}
           className="text-center"
         >
-          <motion.h2
-            custom={0}
-            variants={textVariants}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-          >
-            OUR PORTFOLIO
-          </motion.h2>
-          <motion.p custom={1} variants={textVariants} className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+          <motion.h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">OUR PORTFOLIO</motion.h2>
+          <motion.p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Showcasing our craft in digital, video, and brand storytelling
           </motion.p>
         </motion.div>
