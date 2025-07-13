@@ -52,7 +52,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 ml-2"
           >
             <motion.div className="text-3xl font-bold mb-4">
               insync<span className="text-white">.</span>
@@ -108,8 +108,8 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-xl font-semibold mb-6">Get in Touch</h3>
-            <div className="space-y-4 text-gray-400">
+            <h3 className="text-xl font-semibold mb-6 ml-2">Get in Touch</h3>
+            <div className="space-y-4 text-gray-400 ml-2">
               <motion.a
                 href="mailto:insyncsolutions06@gmail.com"
                 target="_blank"
