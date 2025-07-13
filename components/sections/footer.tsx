@@ -57,7 +57,7 @@ const Footer = () => {
             <motion.div className="text-3xl font-bold mb-4">
               insync<span className="text-white">.</span>
             </motion.div>
-            <p className="text-gray-400 text-lg leading-relaxed max-w-md">
+            <p className="text-gray-400 text-base leading-relaxed max-w-md">
               Crafting intelligent digital experiences through data driven design, content, and code, all powered by
               clear purpose and strategy.
             </p>
@@ -84,7 +84,7 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-xl font-semibold mb-6">Navigation</h3>
+            <h3 className="text-xl font-semibold mb-6 ml-2">Navigation</h3>
             <ul className="space-y-4">
               {navLinks.map((link) => (
                 <li key={link.name}>
