@@ -20,6 +20,41 @@ const Portfolio = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [isMounted, setIsMounted] = useState(false)
 
+  // Add this at the top of the component, after the imports
+  const [marginTop, setMarginTop] = useState("mt-0")
+
+  useEffect(() => {
+    const updateMarginTop = () => {
+      const width = window.innerWidth
+      const height = window.innerHeight
+      const isLandscape = width > height
+
+      if (width < 640) {
+        // Mobile
+        if (isLandscape && width < 900) {
+          setMarginTop("-mt-[50vh]") // Landscape mobile
+        } else {
+          setMarginTop("mt-0") // Portrait mobile
+        }
+      } else if (width < 768) {
+        // Small tablets
+        setMarginTop("-mt-[75vh]")
+      } else {
+        // Desktop and larger tablets
+        setMarginTop("-mt-[100vh]")
+      }
+    }
+
+    updateMarginTop()
+    window.addEventListener("resize", updateMarginTop)
+    window.addEventListener("orientationchange", updateMarginTop)
+
+    return () => {
+      window.removeEventListener("resize", updateMarginTop)
+      window.removeEventListener("orientationchange", updateMarginTop)
+    }
+  }, [])
+
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -136,7 +171,7 @@ const Portfolio = () => {
     <section
       ref={containerRef}
       id="portfolio"
-      className="relative bg-black text-white z-20 mt-0 sm:-mt-[100vh]" // Added z-20 and -mt-[100vh]
+      className={`relative bg-black text-white z-20 ${marginTop}`}
       style={{
         borderTopLeftRadius: "60px 24px",
         borderTopRightRadius: "60px 24px",
