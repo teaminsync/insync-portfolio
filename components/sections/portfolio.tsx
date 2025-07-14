@@ -19,40 +19,18 @@ const Portfolio = () => {
   const headerRef = useRef<HTMLDivElement>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [isMounted, setIsMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Add this at the top of the component, after the imports
-  const [marginTop, setMarginTop] = useState("mt-0")
-
+  // Check for mobile on mount and resize (same logic as services section)
   useEffect(() => {
-    const updateMarginTop = () => {
-      const width = window.innerWidth
-      const height = window.innerHeight
-      const isLandscape = width > height
-
-      if (width < 640) {
-        // Mobile
-        if (isLandscape && width < 900) {
-          setMarginTop("-mt-[50vh]") // Landscape mobile
-        } else {
-          setMarginTop("mt-0") // Portrait mobile
-        }
-      } else if (width < 768) {
-        // Small tablets
-        setMarginTop("-mt-[75vh]")
-      } else {
-        // Desktop and larger tablets
-        setMarginTop("-mt-[100vh]")
-      }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
 
-    updateMarginTop()
-    window.addEventListener("resize", updateMarginTop)
-    window.addEventListener("orientationchange", updateMarginTop)
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
 
-    return () => {
-      window.removeEventListener("resize", updateMarginTop)
-      window.removeEventListener("orientationchange", updateMarginTop)
-    }
+    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
   useEffect(() => {
@@ -171,7 +149,7 @@ const Portfolio = () => {
     <section
       ref={containerRef}
       id="portfolio"
-      className={`relative bg-black text-white z-20 ${marginTop}`}
+      className={`relative bg-black text-white z-20 ${isMobile ? "mt-0" : "-mt-[100vh]"}`}
       style={{
         borderTopLeftRadius: "60px 24px",
         borderTopRightRadius: "60px 24px",
