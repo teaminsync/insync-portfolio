@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react"
 import { motion, useInView } from "framer-motion"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import HeroAnimation from "@/components/hero-animation" // Import the HeroAnimation component
 
 // Register GSAP plugin
 if (typeof window !== "undefined") {
@@ -335,9 +336,11 @@ const Services = () => {
   // Mobile layout - vertical stack
   if (isMobile) {
     return (
-      <section id="services" className="relative bg-[#F9F4EB] py-16">
+      <section id="services" className="relative py-16">
+        {/* Hero Animation Background */}
+        <HeroAnimation />
         {/* Header */}
-        <div className="text-center px-6">
+        <div className="text-center px-6 relative z-10">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -359,7 +362,7 @@ const Services = () => {
         </div>
 
         {/* Mobile Instruction - Centered between header and cards */}
-        <div className="text-center px-6 mb-8 mt-6">
+        <div className="text-center px-6 mb-8 mt-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -372,7 +375,7 @@ const Services = () => {
         </div>
 
         {/* Mobile Cards - Vertical Stack - Properly Centered */}
-        <div className="px-6 space-y-6">
+        <div className="px-6 space-y-6 relative z-10">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -392,9 +395,11 @@ const Services = () => {
 
   // Desktop/Tablet layout - horizontal scroll
   return (
-    <section ref={containerRef} id="services" className="relative bg-[#F9F4EB] min-h-screen sticky top-0 z-10">
+    <section ref={containerRef} id="services" className="relative min-h-screen sticky top-0 z-10">
+      {/* Hero Animation Background */}
+      <HeroAnimation />
       {/* Header Section */}
-      <div className="relative z-10 pt-16 pb-4 md:pt-20 md:pb-6 bg-[#F9F4EB]">
+      <div className="relative z-10 pt-16 pb-4 md:pt-20 md:pb-6">
         <motion.div
           ref={headerRef}
           initial="hidden"
@@ -415,7 +420,7 @@ const Services = () => {
       </div>
 
       {/* Horizontal Scrolling Cards Container */}
-      <div className="relative" style={{ height: "calc(100vh - 140px)" }}>
+      <div className="relative z-10" style={{ height: "calc(100vh - 140px)" }}>
         <div className="h-full flex items-start justify-center pt-4 md:pt-8">
           <div
             ref={cardsRef}
@@ -423,7 +428,7 @@ const Services = () => {
             style={{
               width: "max-content",
               height: "450px",
-              marginRight: "400px"
+              marginRight: "400px",
             }}
           >
             {services.map((service, index) => (

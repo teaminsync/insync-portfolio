@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import Cal, { getCalApi } from "@calcom/embed-react"
 import { useToast } from "@/hooks/use-toast" // Import useToast
 import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
+import HeroAnimation from "@/components/hero-animation" // Import the HeroAnimation component
 
 const Contact = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -166,8 +167,14 @@ const Contact = () => {
   }
 
   return (
-    <section ref={containerRef} id="contact" className="relative pt-24 pb-8 bg-[#F9F4EB]">
-      <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} className="text-center mb-20">
+    <section ref={containerRef} id="contact" className="relative pt-24 pb-8">
+      {/* Hero Animation Background */}
+      <HeroAnimation />
+      <motion.div
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        className="text-center mb-20 relative z-10"
+      >
         <motion.h2
           custom={0}
           variants={textVariants}
@@ -180,7 +187,7 @@ const Contact = () => {
         </motion.p>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Contact Form - Now on Left */}
           <motion.div
@@ -357,7 +364,7 @@ const Contact = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-12 sm:mt-16"
+          className="mt-12 sm:mt-16 relative z-10"
         >
           <div className="text-center mb-8">
             <h3 className="text-3xl font-bold text-black">SCHEDULE A CALL</h3>

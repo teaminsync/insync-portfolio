@@ -14,6 +14,7 @@ interface Particle {
 
 const HeroAnimation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null) // New ref for the parent container
   const animationFrameId = useRef<number | null>(null)
   const [isMounted, setIsMounted] = useState(false)
 
@@ -38,7 +39,7 @@ const HeroAnimation: React.FC = () => {
       }
     },
     [particles],
-  ) // Dependency array for useCallback
+  )
 
   const animate = useCallback(() => {
     const canvas = canvasRef.current
@@ -86,26 +87,32 @@ const HeroAnimation: React.FC = () => {
     }
 
     animationFrameId.current = requestAnimationFrame(animate)
-  }, [particles]) // Dependency array for useCallback
+  }, [particles])
 
   useEffect(() => {
     setIsMounted(true)
     const canvas = canvasRef.current
-    if (!canvas) return
+    const container = containerRef.current
+    if (!canvas || !container) return
 
     const setCanvasDimensions = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const { offsetWidth, offsetHeight } = container
+      canvas.width = offsetWidth
+      canvas.height = offsetHeight
       initParticles(canvas.width, canvas.height) // Re-initialize particles on resize
     }
 
-    setCanvasDimensions() // Initial setup
-    window.addEventListener("resize", setCanvasDimensions)
+    // Initial setup
+    setCanvasDimensions()
+
+    // Use ResizeObserver for dynamic resizing
+    const resizeObserver = new ResizeObserver(setCanvasDimensions)
+    resizeObserver.observe(container)
 
     animationFrameId.current = requestAnimationFrame(animate)
 
     return () => {
-      window.removeEventListener("resize", setCanvasDimensions)
+      resizeObserver.disconnect()
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current)
       }
@@ -117,11 +124,13 @@ const HeroAnimation: React.FC = () => {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full z-0" // Position behind content
-      aria-hidden="true" // Hide from accessibility tree
-    />
+    <div ref={containerRef} className="absolute inset-0 w-full h-full z-0">
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full" // Canvas itself fills its parent div
+        aria-hidden="true" // Hide from accessibility tree
+      />
+    </div>
   )
 }
 
