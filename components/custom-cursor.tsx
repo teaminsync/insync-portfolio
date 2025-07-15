@@ -81,7 +81,7 @@ const CustomCursor = () => {
     <>
       {/* Main cursor */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-40 mix-blend-difference" // Lower z-index than local cursor (z-50)
+        className="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[51] mix-blend-difference" // Lower z-index than local cursor (z-50)
         animate={{
           x: mousePosition.x - 8,
           y: mousePosition.y - 8,
@@ -100,7 +100,7 @@ const CustomCursor = () => {
 
       {/* Trailing cursor */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-white/50 rounded-full pointer-events-none z-30" // Lower z-index
+        className="fixed top-0 left-0 w-8 h-8 border border-white/50 rounded-full pointer-events-none z-[50]" // Lower z-index
         animate={{
           x: mousePosition.x - 16,
           y: mousePosition.y - 16,
