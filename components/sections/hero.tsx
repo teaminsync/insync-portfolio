@@ -52,7 +52,7 @@ const Hero = () => {
       <HeroAnimation />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-12 items-center pt-24 sm:pt-28 md:pt-32 lg:pt-0 min-h-[calc(85vh-6rem)] sm:min-h-[calc(85vh-7rem)] md:min-h-[calc(85vh-8rem)] lg:min-h-[62vh]">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-12 items-center pt-16 sm:pt-20 md:pt-24 lg:pt-0 min-h-[calc(85vh-4rem)] sm:min-h-[calc(85vh-5rem)] md:min-h-[calc(85vh-6rem)] lg:min-h-[62vh]">
           {/* Left Side - Text Content */}
           <motion.div initial="hidden" animate="visible" className="text-left">
             {/* Main Headline with Scrolling Animation */}
