@@ -15,12 +15,9 @@ import { getCalApi } from "@calcom/embed-react"
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
-  const [isMounted, setIsMounted] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false) // New state for touch detection
+  const [isTouchDevice, setIsTouchDevice] = useState(false) // State for touch detection
 
   useEffect(() => {
-    setIsMounted(true)
-
     // Detect touch device
     const checkTouchDevice = () => {
       if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
@@ -55,26 +52,9 @@ export default function Home() {
     })()
   }, [])
 
-  if (!isMounted) {
-    return (
-      <div className="bg-[#F9F4EB] text-white overflow-hidden">
-        <Navigation />
-        <main>
-          <Hero />
-          <About />
-          <Services />
-          <Portfolio />
-          <Process />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    )
-  }
-
   return (
     <div className="bg-[#F9F4EB] text-white overflow-hidden">
-      {/* Conditionally render CustomCursor */}
+      {/* Conditionally render CustomCursor based on isTouchDevice */}
       {!isTouchDevice && <CustomCursor />}
       <Navigation />
 

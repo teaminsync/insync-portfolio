@@ -2,7 +2,8 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { Play } from "lucide-react"
+import HeroAnimation from "@/components/hero-animation" // Import the new component
+import HeroLottieAnimation from "@/components/hero-lottie-animation" // Import the new Lottie component
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -47,6 +48,9 @@ const Hero = () => {
       id="home"
       className="relative bg-[#F9F4EB] min-h-[85vh] flex items-center justify-center overflow-hidden"
     >
+      {/* Hero Animation Background */}
+      <HeroAnimation />
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-12 items-center pt-24 sm:pt-28 md:pt-32 lg:pt-0 min-h-[calc(85vh-6rem)] sm:min-h-[calc(85vh-7rem)] md:min-h-[calc(85vh-8rem)] lg:min-h-[62vh]">
           {/* Left Side - Text Content */}
@@ -77,19 +81,9 @@ const Hero = () => {
             </motion.p>
           </motion.div>
 
-          {/* Right Side - Medium-sized Media Placeholder */}
-          <div className="relative">
-            <div className="aspect-[4/5] max-w-md mx-auto bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center border border-gray-200">
-              <div className="text-center space-y-4">
-                <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto">
-                  <Play className="w-7 h-7 text-white" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-lg font-semibold text-gray-700">Hero Video/Image</p>
-                  <p className="text-sm text-gray-500">Placeholder for media content</p>
-                </div>
-              </div>
-            </div>
+          {/* Right Side - Lottie Animation */}
+          <div className="relative flex items-center justify-center h-full min-h-[200px] lg:min-h-[400px]">
+            <HeroLottieAnimation />
           </div>
         </div>
       </div>
