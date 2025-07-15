@@ -39,21 +39,6 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    if (!isMounted) return
-
-    // Only add the custom-cursor-active class if it's NOT a touch device
-    if (!isTouchDevice) {
-      document.body.classList.add("custom-cursor-active")
-    } else {
-      document.body.classList.remove("custom-cursor-active")
-    }
-
-    return () => {
-      document.body.classList.remove("custom-cursor-active")
-    }
-  }, [isMounted, isTouchDevice]) // Re-run effect if isTouchDevice changes
-
-  useEffect(() => {
     ;(async () => {
       const cal = await getCalApi({ namespace: "30min" })
       cal("floatingButton", {

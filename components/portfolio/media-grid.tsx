@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion"
 import VideoPlayer from "./video-player"
+import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
 
 // Custom hook for cursor management
 const useCustomCursor = () => {
@@ -29,7 +30,7 @@ const useCustomCursor = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return
 
-    const rect = containerRef.current.getBoundingClientRect()
+    const rect = e.currentTarget.getBoundingClientRect()
     const relativeX = e.clientX - rect.left
     const relativeY = e.clientY - rect.top
 
@@ -241,6 +242,16 @@ const MediaGrid = React.memo(() => {
   // Individual MediaBlock component with custom cursor
   const MediaBlock = ({ media, index }: { media: any; index: number }) => {
     const { isHovering, containerRef, x, y, handleMouseEnter, handleMouseLeave, handleMouseMove } = useCustomCursor()
+    const { setIsInteractiveElementHovered } = useCursorContext() // Use context
+
+    // Effect to communicate hover state to global cursor context
+    useEffect(() => {
+      setIsInteractiveElementHovered(isHovering)
+      // Cleanup on unmount or when isHovering changes
+      return () => {
+        setIsInteractiveElementHovered(false)
+      }
+    }, [isHovering, setIsInteractiveElementHovered])
 
     const handleCursorClick = () => {
       if (media.link && media.link !== "#") {

@@ -4,14 +4,15 @@ import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from "framer-motion"
+import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
 
 const ChannelManagementSection = () => {
   const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
-  const [isHoveringButton, setIsHoveringButton] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hideGlobalCursorTimeoutRef = useRef<NodeJS.Timeout | null>(null) // Renamed for clarity
+
+  const { setIsInteractiveElementHovered } = useCursorContext() // Get the context setter
 
   useEffect(() => {
     setIsMounted(true)
@@ -19,35 +20,29 @@ const ChannelManagementSection = () => {
 
   const isInView = useInView(headerRef, { once: true, margin: "-100px" })
 
-  // Cursor tracking with smooth interpolation
-  const cursorX = useMotionValue(0)
-  const cursorY = useMotionValue(0)
-  const smoothX = useSpring(cursorX, { damping: 25, stiffness: 200 })
-  const smoothY = useSpring(cursorY, { damping: 25, stiffness: 200 })
-
-  // Add these motion values for tracking cursor within thumbnail
-  const thumbnailCursorX = useMotionValue(0)
-  const thumbnailCursorY = useMotionValue(0)
-  const thumbnailSmoothX = useSpring(thumbnailCursorX, { damping: 20, stiffness: 150 })
-  const thumbnailSmoothY = useSpring(thumbnailCursorY, { damping: 20, stiffness: 150 })
+  // Motion values for tracking cursor within the hovered channel item
+  const channelItemCursorX = useMotionValue(0)
+  const channelItemCursorY = useMotionValue(0)
+  const smoothChannelItemCursorX = useSpring(channelItemCursorX, { damping: 20, stiffness: 150 })
+  const smoothChannelItemCursorY = useSpring(channelItemCursorY, { damping: 20, stiffness: 150 })
 
   const channels = [
     {
       name: "IIFA",
       url: "https://www.youtube.com/@iifa/featured",
-      thumbnail: "/images/impactpure.svg",
+      thumbnail: "/images/impactpure.svg", // Using existing SVG for now
       description: "International Indian Film Academy",
     },
     {
       name: "Crewcut",
       url: "https://www.youtube.com/@crewcut_",
-      thumbnail: "/images/savefarm.svg",
+      thumbnail: "/images/savefarm.svg", // Using existing SVG for now
       description: "Podcast by Jim Sarbh & guests",
     },
     {
       name: "Sreesanth Nair",
       url: "https://www.youtube.com/@sreesanthnair09",
-      thumbnail: "/images/impactpure.svg",
+      thumbnail: "/images/impactpure.svg", // Using existing SVG for now
       description: "Sreesanth Nair’s podcast hub",
     },
   ]
@@ -66,73 +61,47 @@ const ChannelManagementSection = () => {
     }),
   }
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleChannelMouseEnter = (channelName: string) => {
     if (!isMounted) return
-    cursorX.set(e.clientX - 160) // Half of thumbnail width (320px / 2)
-    cursorY.set(e.clientY - 120) // Half of thumbnail height (240px / 2)
+    // Clear any pending hide timeout for global cursor
+    if (hideGlobalCursorTimeoutRef.current) {
+      clearTimeout(hideGlobalCursorTimeoutRef.current)
+      hideGlobalCursorTimeoutRef.current = null
+    }
+    setHoveredChannel(channelName)
+    setIsInteractiveElementHovered(true) // Signal global cursor to hide
   }
 
-  const handleThumbnailMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleChannelMouseLeave = () => {
+    if (!isMounted) return
+    setHoveredChannel(null) // Immediately hide the thumbnail and local cursor
+    // Start a timeout to show global cursor after a brief delay
+    hideGlobalCursorTimeoutRef.current = setTimeout(() => {
+      setIsInteractiveElementHovered(false) // Signal global cursor to show
+      hideGlobalCursorTimeoutRef.current = null
+    }, 150) // Small delay to allow for quick re-entry
+  }
+
+  const handleChannelItemMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isMounted) return
     const rect = e.currentTarget.getBoundingClientRect()
     const relativeX = e.clientX - rect.left
     const relativeY = e.clientY - rect.top
 
-    // Update cursor position relative to the thumbnail (offset by half button size)
-    thumbnailCursorX.set(relativeX - 40) // Half of button width (80px / 2)
-    thumbnailCursorY.set(relativeY - 40) // Half of button height (80px / 2)
-  }
-
-  const showThumbnail = (channelName: string) => {
-    if (!isMounted) return
-    // Clear any pending hide timeout
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current)
-      hideTimeoutRef.current = null
-    }
-    setHoveredChannel(channelName)
-  }
-
-  const hideThumbnail = () => {
-    if (!isMounted) return
-    // Clear any existing timeout
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current)
-    }
-
-    // Set a timeout to hide the thumbnail
-    hideTimeoutRef.current = setTimeout(() => {
-      if (!isHoveringButton) {
-        setHoveredChannel(null)
-      }
-      hideTimeoutRef.current = null
-    }, 150)
-  }
-
-  const handleButtonEnter = () => {
-    if (!isMounted) return
-    // Clear hide timeout when entering button
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current)
-      hideTimeoutRef.current = null
-    }
-    setIsHoveringButton(true)
-  }
-
-  const handleButtonLeave = () => {
-    if (!isMounted) return
-    setIsHoveringButton(false)
-    setHoveredChannel(null)
+    // Update cursor position relative to the channel item (offset by half button size)
+    channelItemCursorX.set(relativeX - 40) // Half of button width (80px / 2)
+    channelItemCursorY.set(relativeY - 40) // Half of button height (80px / 2)
   }
 
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
-      if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current)
+      if (hideGlobalCursorTimeoutRef.current) {
+        clearTimeout(hideGlobalCursorTimeoutRef.current)
       }
+      setIsInteractiveElementHovered(false) // Ensure global cursor is visible on unmount
     }
-  }, [])
+  }, [setIsInteractiveElementHovered])
 
   return (
     <motion.section
@@ -141,8 +110,7 @@ const ChannelManagementSection = () => {
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="mt-32 mx-6 relative"
-      onMouseMove={handleMouseMove}
-      ref={containerRef}
+      // Removed onMouseMove from section, as it's now per-item
     >
       {/* Section Header with same animation as other sections */}
       <div className="text-center mb-20">
@@ -165,12 +133,29 @@ const ChannelManagementSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
-            className="relative group cursor-pointer"
-            onMouseEnter={() => showThumbnail(channel.name)}
-            onMouseLeave={hideThumbnail}
+            className="relative group cursor-pointer overflow-hidden rounded-xl" // Added rounded-xl and overflow-hidden
+            onMouseEnter={() => handleChannelMouseEnter(channel.name)}
+            onMouseLeave={handleChannelMouseLeave}
+            onMouseMove={handleChannelItemMouseMove} // Attach mouse move listener here
           >
-            {/* Channel Name */}
-            <div className="flex items-center justify-between py-8 px-6 border-b border-white/10 hover:border-white/30 transition-colors duration-500 relative z-20">
+            {/* Background Thumbnail */}
+            <AnimatePresence>
+              {hoveredChannel === channel.name && (
+                <motion.img
+                  key="thumbnail-bg"
+                  src={channel.thumbnail}
+                  alt={`${channel.name} thumbnail`}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="absolute inset-0 w-full h-full object-cover z-0" // z-0 to be behind text
+                />
+              )}
+            </AnimatePresence>
+
+            {/* Text Content (Name, Description, Arrow) */}
+            <div className="relative z-10 flex items-center justify-between py-8 px-6 border-b border-white/10 group-hover:border-white/30 transition-colors duration-500">
               <div>
                 <h4 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none group-hover:text-white transition-all duration-500">
                   {channel.name}
@@ -192,71 +177,32 @@ const ChannelManagementSection = () => {
                 →
               </motion.div>
             </div>
+
+            {/* Custom Animated Cursor Button */}
+            <AnimatePresence>
+              {hoveredChannel === channel.name && (
+                <motion.a
+                  href={channel.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="absolute w-[80px] h-[80px] bg-white rounded-full flex flex-col items-center justify-center text-black text-sm font-medium leading-tight pointer-events-auto z-50"
+                  style={{
+                    left: smoothChannelItemCursorX, // Use the same motion values
+                    top: smoothChannelItemCursorY,
+                  }}
+                >
+                  <span>View</span>
+                  <span>Channel</span>
+                </motion.a>
+              )}
+            </AnimatePresence>
           </motion.div>
         ))}
       </div>
-
-      {/* Cursor-Following Thumbnail */}
-      <AnimatePresence>
-        {hoveredChannel && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="fixed z-50"
-            style={{
-              left: smoothX,
-              top: smoothY,
-              pointerEvents: "none",
-            }}
-          >
-            <motion.div
-              className="relative w-80 h-60 rounded-2xl overflow-hidden shadow-2xl cursor-none"
-              style={{
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)",
-                pointerEvents: "auto",
-              }}
-              onMouseMove={handleThumbnailMouseMove}
-              onMouseEnter={handleButtonEnter}
-              onMouseLeave={handleButtonLeave}
-            >
-              {/* Thumbnail Image */}
-              <img
-                src={channels.find((c) => c.name === hoveredChannel)?.thumbnail || "/placeholder.svg"}
-                alt={`${hoveredChannel} thumbnail`}
-                className="w-full h-full object-cover"
-              />
-
-              {/* Custom Animated Cursor Button - Following cursor within thumbnail */}
-              <AnimatePresence>
-                {channels.some((c) => c.name === hoveredChannel) && (
-                  <motion.a
-                    href={channels.find((c) => c.name === hoveredChannel)?.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    transition={{
-                      duration: 0.2,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                    }}
-                    className="absolute w-[80px] h-[80px] bg-white rounded-full flex flex-col items-center justify-center text-black text-sm font-medium leading-tight pointer-events-auto z-50"
-                    style={{
-                      left: thumbnailSmoothX,
-                      top: thumbnailSmoothY,
-                    }}
-                  >
-                    <span>View</span>
-                    <span>Channel</span>
-                  </motion.a>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.section>
   )
 }

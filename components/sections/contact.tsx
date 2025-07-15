@@ -10,9 +10,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import Cal, { getCalApi } from "@calcom/embed-react"
 import { useToast } from "@/hooks/use-toast" // Import useToast
+import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
 
 const Contact = () => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const calWidgetRef = useRef<HTMLDivElement>(null) // Ref for the Cal.com widget container
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
   const [isSubmitting, setIsSubmitting] = useState(false) // Changed to isSubmitting
   const [formData, setFormData] = useState({
@@ -25,6 +27,7 @@ const Contact = () => {
   })
 
   const { toast } = useToast() // Initialize toast hook
+  const { setIsInteractiveElementHovered } = useCursorContext() // Get the context setter
 
   // Cal.com setup with your exact configuration
   useEffect(() => {
@@ -41,6 +44,22 @@ const Contact = () => {
       })
     })()
   }, [])
+
+  // Handlers for Cal.com widget hover
+  const handleCalMouseEnter = () => {
+    setIsInteractiveElementHovered(true)
+  }
+
+  const handleCalMouseLeave = () => {
+    setIsInteractiveElementHovered(false)
+  }
+
+  // Cleanup on unmount to ensure cursor is visible if component unmounts while hovered
+  useEffect(() => {
+    return () => {
+      setIsInteractiveElementHovered(false)
+    }
+  }, [setIsInteractiveElementHovered])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -345,7 +364,12 @@ const Contact = () => {
           </div>
 
           {/* Cal.com Widget with Dark Theme */}
-          <div className="overflow-hidden">
+          <div
+            ref={calWidgetRef} // Attach ref here
+            className="overflow-hidden"
+            onMouseEnter={handleCalMouseEnter} // Add mouse enter handler
+            onMouseLeave={handleCalMouseLeave} // Add mouse leave handler
+          >
             <Cal
               namespace="30min"
               calLink="insync-solutions/30min"
