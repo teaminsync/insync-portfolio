@@ -19,8 +19,8 @@ const HeroAnimation: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false)
 
   const particles: Particle[] = []
-  const numParticles = 80 // Increased particles for more connections
-  const connectionDistance = 150 // Max distance for lines
+  const [numParticles, setNumParticles] = useState(80) // Default for desktop
+  const [connectionDistance, setConnectionDistance] = useState(150) // Default for desktop
   const particleRadius = 1.5 // Smaller particles
   const particleSpeed = 0.2 // Slower, more subtle movement
 
@@ -38,7 +38,7 @@ const HeroAnimation: React.FC = () => {
         })
       }
     },
-    [particles],
+    [particles, numParticles], // numParticles is a dependency
   )
 
   const animate = useCallback(() => {
@@ -87,7 +87,29 @@ const HeroAnimation: React.FC = () => {
     }
 
     animationFrameId.current = requestAnimationFrame(animate)
-  }, [particles])
+  }, [particles, connectionDistance]) // connectionDistance is a dependency
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      if (width < 768) {
+        // Mobile: Increased density
+        setNumParticles(40) // Slightly more particles
+        setConnectionDistance(120) // Slightly longer connection distance
+      } else {
+        // Tablet and Desktop
+        setNumParticles(80)
+        setConnectionDistance(150)
+      }
+    }
+
+    handleResize() // Set initial values
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   useEffect(() => {
     setIsMounted(true)
@@ -99,7 +121,7 @@ const HeroAnimation: React.FC = () => {
       const { offsetWidth, offsetHeight } = container
       canvas.width = offsetWidth
       canvas.height = offsetHeight
-      initParticles(canvas.width, canvas.height) // Re-initialize particles on resize
+      initParticles(canvas.width, canvas.height) // Re-initialize particles on resize or parameter change
     }
 
     // Initial setup
@@ -117,7 +139,7 @@ const HeroAnimation: React.FC = () => {
         cancelAnimationFrame(animationFrameId.current)
       }
     }
-  }, [animate, initParticles])
+  }, [animate, initParticles, numParticles, connectionDistance]) // Dependencies for re-running effect
 
   if (!isMounted) {
     return null // Render nothing on the server
