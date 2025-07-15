@@ -11,6 +11,7 @@ import Contact from "@/components/sections/contact"
 import Footer from "@/components/sections/footer"
 import Navigation from "@/components/navigation"
 import CustomCursor from "@/components/custom-cursor"
+import { getCalApi } from "@calcom/embed-react"
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
@@ -51,6 +52,23 @@ export default function Home() {
       document.body.classList.remove("custom-cursor-active")
     }
   }, [isMounted, isTouchDevice]) // Re-run effect if isTouchDevice changes
+
+  useEffect(() => {
+    ;(async () => {
+      const cal = await getCalApi({ namespace: "30min" })
+      cal("floatingButton", {
+        calLink: "insync-solutions/30min",
+        config: { layout: "month_view" },
+        buttonText: "LET’S SYNC UP",
+        hideButtonIcon: false,
+      })
+      cal("ui", {
+        cssVarsPerTheme: { light: { "cal-brand": "#000000" }, dark: { "cal-brand": "#F9F4EB" } },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      })
+    })()
+  }, [])
 
   if (!isMounted) {
     return (
