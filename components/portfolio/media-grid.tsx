@@ -62,36 +62,29 @@ const MediaGrid = React.memo(() => {
     {
       type: "image",
       src: "/images/savefarm.svg",
-      alt: "Save Farm Website",
+      alt: "Save Farm",
       link: "https://savefarm.in",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "left",
-      title: "Save Farm",
-      description: "Rustic farmstay rebrand for eco-conscious travelers.",
     },
-
     {
       type: "image",
       src: "/images/impactpure.svg",
-      alt: "IMPACTPURE Platform",
+      alt: "IMPACTPURE",
       link: "https://impactpure.vercel.app",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "right",
-      title: "IMPACTPURE",
-      description: "Sleek D2C site for a portable water purifier brand.",
     },
     {
       type: "image",
       src: "/images/elegant.svg",
-      alt: "Elegant Atmos Website",
+      alt: "Elegant Atmos",
       link: "#",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "center",
-      title: "Elegant Atmos",
-      description: "Luxury microsite blending sustainability, serenity, and design.",
     },
 
     // Video Production section (4 videos: 3-6)
@@ -106,20 +99,16 @@ const MediaGrid = React.memo(() => {
       isTrigger: true,
       triggerName: "Video Production Trigger",
       horizontalPosition: "right",
-      title: "Domin8",
-      description: "Edits and teasers for an athleisure brand.",
     },
     {
       type: "video",
       videoSrc: "/images/shantanu.webm",
       coverImage: "/images/shantanu.jpg",
-      alt: "Shantanu Rangnekar",
+      alt: "Shantanu",
       link: "https://www.youtube.com/watch?v=3LEKpf01n6U",
       size: "youtube",
       sectionIndex: 1,
       horizontalPosition: "left",
-      title: "Shantanu Rangnekar",
-      description: "Sketch video with cinematic direction and stylized edit.",
     },
     {
       type: "video",
@@ -130,20 +119,16 @@ const MediaGrid = React.memo(() => {
       size: "reel",
       sectionIndex: 1,
       horizontalPosition: "center",
-      title: "Domin8",
-      description: "Reels showcasing products and energy.",
     },
     {
       type: "video",
       videoSrc: "/images/podcast.webm",
       coverImage: "/images/podcast.jpg",
-      alt: "Shreyas Talpade Sobat Dilkhulas",
+      alt: "Podcast",
       link: "https://www.youtube.com/watch?v=z3sR8tzKq0g&t=1184s",
       size: "youtube",
       sectionIndex: 1,
       horizontalPosition: "right",
-      title: "Shreyas Talpade",
-      description: "Marathi podcast with celeb guests and film industry stories.",
     },
 
     // Branded section (3 videos: 7-9)
@@ -158,8 +143,6 @@ const MediaGrid = React.memo(() => {
       isTrigger: true,
       triggerName: "Branded Trigger",
       horizontalPosition: "left",
-      title: "MPI",
-      description: "Branded content for a paramedical institute.",
     },
     {
       type: "video",
@@ -170,20 +153,16 @@ const MediaGrid = React.memo(() => {
       size: "reel",
       sectionIndex: 2,
       horizontalPosition: "right",
-      title: "Vim India x Ritviz",
-      description: "Scripted digital campaign collaboration."
     },
     {
       type: "video",
       videoSrc: "/images/impactpure.webm",
       coverImage: null,
-      alt: "IMPACTPURE Reel",
+      alt: "IMPACTPURE Brand Reel",
       link: "#",
       size: "reel",
       sectionIndex: 2,
       horizontalPosition: "center",
-      title: "IMPACTPURE",
-      description: "Visual identity for D2C water purifier.",
     },
 
     // Events section (1 video: 10)
@@ -198,10 +177,8 @@ const MediaGrid = React.memo(() => {
       isTrigger: true,
       triggerName: "Events Trigger",
       horizontalPosition: "left",
-      title: "Rukmini Play",
-      description: "Stage edit of a Marathi theatre event.",
     },
-  ];
+  ]
 
   const getImageSize = (size: string) => {
     switch (size) {
@@ -301,8 +278,9 @@ const MediaGrid = React.memo(() => {
       >
         <div
           ref={containerRef}
-          className={`${getImageSize(media.size)} relative overflow-hidden ${isHovering ? "cursor-none" : "cursor-pointer"
-            }`}
+          className={`${getImageSize(media.size)} relative overflow-hidden ${
+            isHovering ? "cursor-none" : "cursor-pointer"
+          }`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
@@ -370,22 +348,6 @@ const MediaGrid = React.memo(() => {
               transition={{ duration: 0.6, ease: "easeInOut" }} // Slower transition
             />
           </div>
-
-          {/* NEW: Text Overlay for Title and Description */}
-          <AnimatePresence>
-            {isHovering && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-40"
-              >
-                <h4 className="text-white text-2xl font-bold leading-tight mb-1">{media.title}</h4>
-                <p className="text-gray-300 text-sm leading-snug">{media.description}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Custom Animated Cursor */}
           <AnimatePresence>
