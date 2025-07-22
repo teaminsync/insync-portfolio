@@ -373,7 +373,7 @@ const MediaGrid = React.memo(() => {
   }
 
   return (
-    <div className="px-0 sm:px-6 lg:px-8">
+    <div className="px-4 sm:px-6 lg:px-8">
       <div className="py-12 space-y-12">
         {allMedia.map((media, index) => (
           <MediaBlock key={`media-${index}`} media={media} index={index} />
