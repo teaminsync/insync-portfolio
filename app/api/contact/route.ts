@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
                 ? `
             <p style="margin: 10px 0; color: #333333;">
               <strong>Call:</strong>
-              <a href="tel:${phone}" style="color: #000000; text-decoration: none; margin-left: 5px;">${phone}</a>
+              <a href="tel:${phone}" style="color: #000000; text-decoration: none;">${phone}</a>
             </p>
             `
                 : ""
@@ -113,14 +113,14 @@ export async function POST(request: NextRequest) {
                 ? `
             <p style="margin: 10px 0; color: #333333;">
               <strong>WhatsApp:</strong>
-              <a href="https://wa.me/91${String(phone).replace(/\D/g, "")}" style="color: #000000; text-decoration: none; margin-left: 5px;" target="_blank">Send WhatsApp Message</a>
+              <a href="https://wa.me/91${String(phone).replace(/\D/g, "")}" style="color: #000000; text-decoration: none;" target="_blank">Send WhatsApp Message</a>
             </p>
             `
                 : ""
             }
             <p style="margin: 10px 0; color: #333333;">
               <strong>Email:</strong>
-              <a href="mailto:${email}" style="color: #000000; text-decoration: none; margin-left: 5px;">${email}</a>
+              <a href="mailto:${email}" style="color: #000000; text-decoration: none;">${email}</a>
             </p>
           </div>
         </div>
