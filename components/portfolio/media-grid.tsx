@@ -196,9 +196,9 @@ const MediaGrid = React.memo(() => {
   const getHorizontalPosition = (position: string) => {
     switch (position) {
       case "left":
-        return "justify-center md:justify-start"
+        return "justify-end md:justify-start"
       case "right":
-        return "justify-center md:justify-end"
+        return "justify-start md:justify-end"
       case "center":
         return "justify-center"
       default:
@@ -208,7 +208,7 @@ const MediaGrid = React.memo(() => {
 
   if (!isMounted) {
     return (
-      <div className="px-6 lg:px-8">
+      <div className="px-2 sm:px-6 lg:px-8">
         <div className="py-12 space-y-12">
           {allMedia.map((media, index) => (
             <div
