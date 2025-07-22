@@ -183,7 +183,7 @@ const MediaGrid = React.memo(() => {
   const getImageSize = (size: string) => {
   switch (size) {
     case "large":
-      return "w-[22rem] h-[13.4rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[21rem]";
+      return "w-[20rem] h-[12.2rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
     case "reel":
       return "w-[13.5rem] h-[24rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]";
     case "youtube":
@@ -373,7 +373,7 @@ const MediaGrid = React.memo(() => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-2 sm:px-6 lg:px-8">
       <div className="py-12 space-y-12">
         {allMedia.map((media, index) => (
           <MediaBlock key={`media-${index}`} media={media} index={index} />
