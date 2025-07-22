@@ -183,13 +183,13 @@ const MediaGrid = React.memo(() => {
   const getImageSize = (size: string) => {
   switch (size) {
     case "large":
-      return "w-[20rem] h-[12.2rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
+      return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
     case "reel":
-      return "w-[13.5rem] h-[24rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]";
+      return "w-[15rem] h-[26.7rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]";
     case "youtube":
-      return "w-[21rem] h-[11.55rem] sm:w-[28rem] sm:h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]";
+      return "w-[21rem] h-[11.82rem] sm:w-[28rem] sm:h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]";
     default:
-      return "w-[22rem] h-[13.4rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[21rem]";
+      return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
   }
 }
 
