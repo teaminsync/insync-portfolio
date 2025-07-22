@@ -181,28 +181,24 @@ const MediaGrid = React.memo(() => {
   ]
 
   const getImageSize = (size: string) => {
-    switch (size) {
-      case "large":
-        return "w-[30rem] h-[17.8rem] lg:w-[34rem] lg:h-[20.15rem]"
-      case "medium":
-        return "w-[22rem] h-[13.05rem] lg:w-96 lg:h-[14.25rem]"
-      case "small":
-        return "w-[18rem] h-[10.7rem] lg:w-80 lg:h-[11.85rem]"
-      case "reel":
-        return "w-[18rem] h-[32rem] lg:w-[22.5rem] lg:h-[40rem]"
-      case "youtube":
-        return "w-[28rem] h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]"
-      default:
-        return "w-[22rem] h-[13.05rem]"
-    }
+  switch (size) {
+    case "large":
+      return "w-[22rem] h-[13.4rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[21rem]";
+    case "reel":
+      return "w-[13.5rem] h-[24rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]";
+    case "youtube":
+      return "w-[21rem] h-[11.55rem] sm:w-[28rem] sm:h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]";
+    default:
+      return "w-[22rem] h-[13.4rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[21rem]";
   }
+}
 
   const getHorizontalPosition = (position: string) => {
     switch (position) {
       case "left":
-        return "justify-start"
+        return "justify-center md:justify-start"
       case "right":
-        return "justify-end"
+        return "justify-center md:justify-end"
       case "center":
         return "justify-center"
       default:
@@ -377,7 +373,7 @@ const MediaGrid = React.memo(() => {
   }
 
   return (
-    <div className="px-6 lg:px-8">
+    <div className="px-0 sm:px-6 lg:px-8">
       <div className="py-12 space-y-12">
         {allMedia.map((media, index) => (
           <MediaBlock key={`media-${index}`} media={media} index={index} />
