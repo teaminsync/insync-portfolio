@@ -425,7 +425,7 @@ const Navigation = () => {
         className="fixed top-0 left-0 z-50 px-6 sm:px-7 md:px-8 lg:px-12 xl:px-16 pt-6 sm:pt-7 md:pt-8 lg:pt-12 xl:pt-16"
       >
         <motion.a
-          href="#home"
+          href="#"
           ref={logoRef}
           whileHover={{ scale: 1.05 }}
           className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold tracking-tight relative block"

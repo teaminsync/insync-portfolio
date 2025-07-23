@@ -53,7 +53,7 @@ const LeftTextContent = ({ currentStep }: LeftTextContentProps) => {
         >
           {sections.map((title, index) => (
             <li key={index}>
-              <span className="text-white text-[1.75rem] md:text-[2.25rem] lg:text-[2.98rem]">{title}</span>
+              <span className="text-white text-[1.74rem] md:text-[2.23rem] lg:text-[2.96rem]">{title}</span>
             </li>
           ))}
         </ul>

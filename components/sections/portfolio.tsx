@@ -13,24 +13,156 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
 }
 
+// Define the full set of decorative elements outside the component
+const portfolioDecorativeElementsData = [
+  {
+    col: 0, // Original column index
+    items: [
+      { top: "2%", size: 36, src: "elmnt1" },
+      { top: "12%", size: 36, src: "elmnt4" },
+      { top: "22%", size: 32, src: "elmnt2" },
+      { top: "32%", size: 36, src: "elmnt6" },
+      { top: "42%", size: 28, src: "elmnt3" },
+      { top: "52%", size: 36, src: "elmnt5" },
+      { top: "62%", size: 32, src: "elmnt1" },
+      { top: "72%", size: 36, src: "elmnt4" },
+      { top: "82%", size: 36, src: "elmnt2" },
+      { top: "92%", size: 36, src: "elmnt6" },
+    ],
+  },
+  {
+    col: 1,
+    items: [
+      { top: "7%", size: 32, src: "elmnt3" },
+      { top: "17%", size: 36, src: "elmnt5" },
+      { top: "27%", size: 28, src: "elmnt1" },
+      { top: "37%", size: 36, src: "elmnt4" },
+      { top: "47%", size: 36, src: "elmnt2" },
+      { top: "57%", size: 32, src: "elmnt6" },
+      { top: "67%", size: 28, src: "elmnt3" },
+      { top: "77%", size: 36, src: "elmnt5" },
+      { top: "87%", size: 36, src: "elmnt1" },
+      { top: "97%", size: 36, src: "elmnt4" },
+    ],
+  },
+  {
+    col: 2,
+    items: [
+      { top: "4%", size: 36, src: "elmnt6" },
+      { top: "14%", size: 32, src: "elmnt2" },
+      { top: "24%", size: 28, src: "elmnt5" },
+      { top: "34%", size: 36, src: "elmnt3" },
+      { top: "44%", size: 36, src: "elmnt1" },
+      { top: "54%", size: 36, src: "elmnt4" },
+      { top: "64%", size: 36, src: "elmnt6" },
+      { top: "74%", size: 32, src: "elmnt2" },
+      { top: "84%", size: 36, src: "elmnt5" },
+      { top: "94%", size: 28, src: "elmnt2" },
+    ],
+  },
+  {
+    col: 3,
+    items: [
+      { top: "1%", size: 36, src: "elmnt4" },
+      { top: "11%", size: 28, src: "elmnt1" },
+      { top: "21%", size: 36, src: "elmnt6" },
+      { top: "31%", size: 32, src: "elmnt3" },
+      { top: "41%", size: 36, src: "elmnt5" },
+      { top: "51%", size: 28, src: "elmnt2" },
+      { top: "61%", size: 36, src: "elmnt4" },
+      { top: "71%", size: 36, src: "elmnt1" },
+      { top: "81%", size: 32, src: "elmnt6" },
+      { top: "91%", size: 28, src: "elmnt3" },
+    ],
+  },
+  {
+    col: 4,
+    items: [
+      { top: "6%", size: 32, src: "elmnt2" },
+      { top: "16%", size: 36, src: "elmnt4" },
+      { top: "26%", size: 36, src: "elmnt3" },
+      { top: "36%", size: 28, src: "elmnt1" },
+      { top: "46%", size: 36, src: "elmnt6" },
+      { top: "56%", size: 32, src: "elmnt3" },
+      { top: "66%", size: 36, src: "elmnt2" },
+      { top: "76%", size: 36, src: "elmnt4" },
+      { top: "86%", size: 36, src: "elmnt6" },
+      { top: "96%", size: 36, src: "elmnt1" },
+    ],
+  },
+  {
+    col: 5,
+    items: [
+      { top: "3%", size: 36, src: "elmnt5" },
+      { top: "13%", size: 32, src: "elmnt3" },
+      { top: "23%", size: 36, src: "elmnt4" },
+      { top: "33%", size: 28, src: "elmnt5" },
+      { top: "43%", size: 36, src: "elmnt4" },
+      { top: "53%", size: 36, src: "elmnt2" },
+      { top: "63%", size: 32, src: "elmnt5" },
+      { top: "73%", size: 28, src: "elmnt3" },
+      { top: "83%", size: 36, src: "elmnt5" },
+      { top: "93%", size: 36, src: "elmnt5" },
+    ],
+  },
+  {
+    col: 6,
+    items: [
+      { top: "8%", size: 36, src: "elmnt2" },
+      { top: "18%", size: 36, src: "elmnt3" },
+      { top: "28%", size: 36, src: "elmnt4" },
+      { top: "38%", size: 28, src: "elmnt2" },
+      { top: "48%", size: 36, src: "elmnt1" },
+      { top: "58%", size: 36, src: "elmnt1" },
+      { top: "68%", size: 36, src: "elmnt4" },
+      { top: "78%", size: 32, src: "elmnt3" },
+      { top: "88%", size: 36, src: "elmnt4" },
+      { top: "98%", size: 36, src: "elmnt3" },
+    ],
+  },
+]
+
+// Define which column indices to show for each number of active columns
+const portfolioColumnIndicesToShow = {
+  3: [0, 1, 2], 
+  5: [0, 1, 2, 3, 4], // For 5 columns, show first, second, middle, second-to-last, last
+  7: [0, 1, 2, 3, 4, 5, 6], // For 7 columns, show all
+}
+
 const Portfolio = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const leftTextRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [isMounted, setIsMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobileLayout, setIsMobileLayout] = useState(false) // Controls layout (vertical stack vs. two-column)
+  const [shouldApplyLayeredTransition, setShouldApplyLayeredTransition] = useState(false) // Controls -mt-[100vh]
+  const [activeColumns, setActiveColumns] = useState(7) // Default for desktop decorative elements
 
-  // Check for mobile on mount and resize (same logic as services section)
+  // Check for screen size on mount and resize
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    const checkScreenSize = () => {
+      // Layout switch: vertical stack for screens < 1024px (mobile & tablet)
+      setIsMobileLayout(window.innerWidth < 1024)
+      // Layered transition: apply for screens >= 768px (tablet & desktop)
+      setShouldApplyLayeredTransition(window.innerWidth >= 768)
+
+      // Update activeColumns for decorative elements
+      const width = window.innerWidth
+      if (width < 640) {
+        // Tailwind's 'sm' breakpoint
+        setActiveColumns(3)
+      } else if (width < 1024) {
+        // Tailwind's 'lg' breakpoint
+        setActiveColumns(5)
+      } else {
+        setActiveColumns(7)
+      }
     }
 
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
+    checkScreenSize()
+    window.addEventListener("resize", checkScreenSize)
 
-    return () => window.removeEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkScreenSize)
   }, [])
 
   useEffect(() => {
@@ -39,97 +171,104 @@ const Portfolio = () => {
 
   const isInView = useInView(headerRef, { once: true, margin: "-100px" })
 
+  // GSAP ScrollTrigger logic for desktop and tablet (where layered transition applies)
   useEffect(() => {
-    if (!isMounted || !containerRef.current || !leftTextRef.current) return
+    const leftTextElement = document.getElementById("portfolio-left-text")
+    let pinTrigger: ScrollTrigger | null = null
+    const imageTriggers: ScrollTrigger[] = []
 
-    // Wait for DOM to be ready
-    const timeoutId = setTimeout(() => {
-      const leftTextElement = leftTextRef.current
-      const firstImage = document.querySelector(`[data-image-index="0"]`)
-      const lastImage = document.querySelector(`[data-image-index="10"]`)
-
-      if (!leftTextElement || !firstImage || !lastImage) return
-
-      // Pin the left text during the entire image section
-      const pinTrigger = ScrollTrigger.create({
-        trigger: firstImage,
-        start: "top 20%",
-        endTrigger: lastImage,
-        end: "bottom 80%",
-        pin: leftTextElement,
-        pinSpacing: false,
-        id: "pin-left-text",
+    // Cleanup function to kill all triggers and clear GSAP styles
+    const cleanupTriggers = () => {
+      if (pinTrigger) pinTrigger.kill()
+      imageTriggers.forEach((trigger) => {
+        if (trigger && typeof trigger.kill === "function") {
+          trigger.kill()
+        }
       })
+      // Clear any inline styles applied by GSAP pinning
+      if (leftTextElement) gsap.set(leftTextElement, { clearProps: "all" })
+    }
 
-      // Create individual triggers for content changes
-      const imageTriggers: any[] = []
+    if (!isMounted) return cleanupTriggers() // Ensure cleanup on unmount or initial render if not mounted
 
-      // Default to Websites at start
-      setCurrentStep(0)
+    // Only apply pinning and ScrollTrigger effects if the layered transition is active
+    if (shouldApplyLayeredTransition && !isMobileLayout) {
+      // Only for desktop layout with pinning
+      const timeoutId = setTimeout(() => {
+        const firstImage = document.querySelector(`[data-image-index="0"]`)
+        const lastImage = document.querySelector(`[data-image-index="10"]`)
 
-      // Video Production trigger
-      const videoProductionTrigger = document.querySelector(`[data-image-index="3"]`)
-      if (videoProductionTrigger) {
-        imageTriggers.push(
-          ScrollTrigger.create({
-            trigger: videoProductionTrigger,
-            start: "top 40%",
-            end: "bottom 40%",
-            onEnter: () => setCurrentStep(1),
-            onEnterBack: () => setCurrentStep(1),
-            onLeaveBack: () => setCurrentStep(0),
-            id: "video-production-trigger",
-          }),
-        )
-      }
+        if (!leftTextElement || !firstImage || !lastImage) return
 
-      // Branded trigger
-      const brandedTrigger = document.querySelector(`[data-image-index="7"]`)
-      if (brandedTrigger) {
-        imageTriggers.push(
-          ScrollTrigger.create({
-            trigger: brandedTrigger,
-            start: "top 45%",
-            end: "bottom 30%",
-            onEnter: () => setCurrentStep(2),
-            onEnterBack: () => setCurrentStep(2),
-            onLeaveBack: () => setCurrentStep(1),
-            id: "branded-trigger",
-          }),
-        )
-      }
-
-      // Events trigger
-      const eventsTrigger = document.querySelector(`[data-image-index="10"]`)
-      if (eventsTrigger) {
-        imageTriggers.push(
-          ScrollTrigger.create({
-            trigger: eventsTrigger,
-            start: "top 40%",
-            onEnter: () => setCurrentStep(3),
-            onEnterBack: () => setCurrentStep(3),
-            onLeaveBack: () => setCurrentStep(2),
-            id: "events-trigger",
-          }),
-        )
-      }
-
-      setTimeout(() => ScrollTrigger.refresh(), 200)
-
-      return () => {
-        pinTrigger.kill()
-        imageTriggers.forEach((trigger) => {
-          if (trigger && typeof trigger.kill === "function") {
-            trigger.kill()
-          }
+        // Pin the left text during the entire image section
+        pinTrigger = ScrollTrigger.create({
+          trigger: firstImage,
+          start: "top 20%",
+          endTrigger: lastImage,
+          end: "bottom 80%",
+          pin: leftTextElement,
+          pinSpacing: false,
+          id: "pin-left-text",
         })
-      }
-    }, 100)
+
+        // Create individual triggers for content changes
+        setCurrentStep(0) // Default to Websites at start
+
+        const videoProductionTrigger = document.querySelector(`[data-image-index="3"]`)
+        if (videoProductionTrigger) {
+          imageTriggers.push(
+            ScrollTrigger.create({
+              trigger: videoProductionTrigger,
+              start: "top 40%",
+              end: "bottom 40%",
+              onEnter: () => setCurrentStep(1),
+              onEnterBack: () => setCurrentStep(1),
+              onLeaveBack: () => setCurrentStep(0),
+              id: "video-production-trigger",
+            }),
+          )
+        }
+
+        const brandedTrigger = document.querySelector(`[data-image-index="7"]`)
+        if (brandedTrigger) {
+          imageTriggers.push(
+            ScrollTrigger.create({
+              trigger: brandedTrigger,
+              start: "top 45%",
+              end: "bottom 30%",
+              onEnter: () => setCurrentStep(2),
+              onEnterBack: () => setCurrentStep(2),
+              onLeaveBack: () => setCurrentStep(1),
+              id: "branded-trigger",
+            }),
+          )
+        }
+
+        const eventsTrigger = document.querySelector(`[data-image-index="10"]`)
+        if (eventsTrigger) {
+          imageTriggers.push(
+            ScrollTrigger.create({
+              trigger: eventsTrigger,
+              start: "top 40%",
+              onEnter: () => setCurrentStep(3),
+              onEnterBack: () => setCurrentStep(3),
+              onLeaveBack: () => setCurrentStep(2),
+              id: "events-trigger",
+            }),
+          )
+        }
+
+        setTimeout(() => ScrollTrigger.refresh(), 200)
+      }, 100) // Small delay to ensure DOM is ready
+    } else {
+      // If mobile/tablet layout or no layered transition, ensure no pinning and clear any GSAP styles
+      cleanupTriggers()
+    }
 
     return () => {
-      clearTimeout(timeoutId)
+      cleanupTriggers()
     }
-  }, [isMounted])
+  }, [isMounted, isMobileLayout, shouldApplyLayeredTransition]) // Re-run when these states change
 
   // Same text variants as Services section
   const textVariants = {
@@ -145,18 +284,23 @@ const Portfolio = () => {
     }),
   }
 
+  // Filter the columns to be rendered based on activeColumns
+  const columnsToRender = portfolioDecorativeElementsData.filter((_, i) =>
+    portfolioColumnIndicesToShow[activeColumns as keyof typeof portfolioColumnIndicesToShow].includes(i),
+  )
+
   return (
     <section
       ref={containerRef}
       id="portfolio"
-      className={`relative bg-black text-white z-20 ${isMobile ? "mt-0" : "-mt-[100vh]"}`}
+      className={`relative bg-black text-white z-20 ${shouldApplyLayeredTransition ? "-mt-[100vh]" : "mt-0"}`}
       style={{
         borderTopLeftRadius: "60px 24px",
         borderTopRightRadius: "60px 24px",
       }}
     >
       {/* Header */}
-      <div className="py-32 text-center">
+      <div className="pt-32 pb-20 lg:pb-32 text-center px-4 sm:px-0">
         <motion.div
           ref={headerRef}
           initial="hidden"
@@ -173,209 +317,50 @@ const Portfolio = () => {
       {/* Decorative Background Elements - Hydration Safe */}
       {isMounted && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* ----- Column 1 (Left Edge) ----- */}
-          {[
-            { top: "2%", left: "4%", size: 36, src: "elmnt1" },
-            { top: "12%", left: "7%", size: 36, src: "elmnt4" },
-            { top: "22%", left: "5%", size: 32, src: "elmnt2" },
-            { top: "32%", left: "8%", size: 36, src: "elmnt6" },
-            { top: "42%", left: "3%", size: 28, src: "elmnt3" },
-            { top: "52%", left: "6%", size: 36, src: "elmnt5" },
-            { top: "62%", left: "9%", size: 32, src: "elmnt1" },
-            { top: "72%", left: "4%", size: 36, src: "elmnt4" },
-            { top: "82%", left: "7%", size: 36, src: "elmnt2" },
-            { top: "92%", left: "5%", size: 36, src: "elmnt6" },
-          ].map((e, i) => (
-            <div
-              key={`col1-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`, // Convert Tailwind unit (e.g., w-36 is 9rem = 144px)
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 2 ----- */}
-          {[
-            { top: "7%", left: "16%", size: 32, src: "elmnt3" },
-            { top: "17%", left: "19%", size: 36, src: "elmnt5" },
-            { top: "27%", left: "17%", size: 28, src: "elmnt1" },
-            { top: "37%", left: "20%", size: 36, src: "elmnt4" },
-            { top: "47%", left: "15%", size: 36, src: "elmnt2" },
-            { top: "57%", left: "18%", size: 32, src: "elmnt6" },
-            { top: "67%", left: "21%", size: 28, src: "elmnt3" },
-            { top: "77%", left: "16%", size: 36, src: "elmnt5" },
-            { top: "87%", left: "19%", size: 36, src: "elmnt1" },
-            { top: "97%", left: "17%", size: 36, src: "elmnt4" },
-          ].map((e, i) => (
-            <div
-              key={`col2-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 3 ----- */}
-          {[
-            { top: "4%", left: "29%", size: 36, src: "elmnt6" },
-            { top: "14%", left: "32%", size: 32, src: "elmnt2" },
-            { top: "24%", left: "30%", size: 28, src: "elmnt5" },
-            { top: "34%", left: "34%", size: 36, src: "elmnt3" },
-            { top: "44%", left: "28%", size: 36, src: "elmnt1" },
-            { top: "54%", left: "33%", size: 36, src: "elmnt4" },
-            { top: "64%", left: "31%", size: 36, src: "elmnt6" },
-            { top: "74%", left: "29%", size: 32, src: "elmnt2" },
-            { top: "84%", left: "35%", size: 36, src: "elmnt5" },
-            { top: "94%", left: "30%", size: 28, src: "elmnt2" },
-          ].map((e, i) => (
-            <div
-              key={`col3-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 4 ----- */}
-          {[
-            { top: "1%", left: "42%", size: 36, src: "elmnt4" },
-            { top: "11%", left: "45%", size: 28, src: "elmnt1" },
-            { top: "21%", left: "43%", size: 36, src: "elmnt6" },
-            { top: "31%", left: "47%", size: 32, src: "elmnt3" },
-            { top: "41%", left: "41%", size: 36, src: "elmnt5" },
-            { top: "51%", left: "46%", size: 28, src: "elmnt2" },
-            { top: "61%", left: "44%", size: 36, src: "elmnt4" },
-            { top: "71%", left: "42%", size: 36, src: "elmnt1" },
-            { top: "81%", left: "47%", size: 32, src: "elmnt6" },
-            { top: "91%", left: "45%", size: 28, src: "elmnt3" },
-          ].map((e, i) => (
-            <div
-              key={`col4-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 5 ----- */}
-          {[
-            { top: "6%", left: "55%", size: 32, src: "elmnt2" },
-            { top: "16%", left: "58%", size: 36, src: "elmnt4" },
-            { top: "26%", left: "56%", size: 36, src: "elmnt3" },
-            { top: "36%", left: "60%", size: 28, src: "elmnt1" },
-            { top: "46%", left: "54%", size: 36, src: "elmnt6" },
-            { top: "56%", left: "59%", size: 32, src: "elmnt3" },
-            { top: "66%", left: "57%", size: 36, src: "elmnt2" },
-            { top: "76%", left: "55%", size: 36, src: "elmnt4" },
-            { top: "86%", left: "61%", size: 36, src: "elmnt6" },
-            { top: "96%", left: "58%", size: 36, src: "elmnt1" },
-          ].map((e, i) => (
-            <div
-              key={`col5-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 6 ----- */}
-          {[
-            { top: "3%", left: "68%", size: 36, src: "elmnt5" },
-            { top: "13%", left: "71%", size: 32, src: "elmnt3" },
-            { top: "23%", left: "69%", size: 36, src: "elmnt4" },
-            { top: "33%", left: "73%", size: 28, src: "elmnt5" },
-            { top: "43%", left: "67%", size: 36, src: "elmnt4" },
-            { top: "53%", left: "72%", size: 36, src: "elmnt2" },
-            { top: "63%", left: "70%", size: 32, src: "elmnt5" },
-            { top: "73%", left: "68%", size: 28, src: "elmnt3" },
-            { top: "83%", left: "74%", size: 36, src: "elmnt5" },
-            { top: "93%", left: "71%", size: 36, src: "elmnt5" },
-          ].map((e, i) => (
-            <div
-              key={`col6-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                left: e.left,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
-
-          {/* ----- Column 7 (Right Edge) ----- */}
-          {[
-            { top: "8%", right: "6%", size: 36, src: "elmnt2" },
-            { top: "18%", right: "8%", size: 36, src: "elmnt3" },
-            { top: "28%", right: "5%", size: 36, src: "elmnt4" },
-            { top: "38%", right: "9%", size: 28, src: "elmnt2" },
-            { top: "48%", right: "7%", size: 36, src: "elmnt1" },
-            { top: "58%", right: "4%", size: 36, src: "elmnt1" },
-            { top: "68%", right: "8%", size: 36, src: "elmnt4" },
-            { top: "78%", right: "6%", size: 32, src: "elmnt3" },
-            { top: "88%", right: "9%", size: 36, src: "elmnt4" },
-            { top: "98%", right: "5%", size: 36, src: "elmnt3" },
-          ].map((e, i) => (
-            <div
-              key={`col7-${i}`}
-              className={`absolute opacity-20`}
-              style={{
-                top: e.top,
-                right: e.right,
-                width: `${e.size * 4}px`,
-                height: `${e.size * 4}px`,
-              }}
-            >
-              <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
-            </div>
-          ))}
+          {columnsToRender.map((column, i) =>
+            column.items.map((e, j) => {
+              // Calculate left position based on the index within the *rendered* columns
+              // and the total number of active columns.
+              const leftPercentage = activeColumns > 1 ? (i / (activeColumns - 1)) * 100 : 50
+              return (
+                <div
+                  key={`col${column.col}-item${j}`} // Use original column index for unique key
+                  className="absolute opacity-20"
+                  style={{
+                    top: e.top,
+                    left: `${leftPercentage}%`,
+                    transform: "translateX(-50%)",
+                    width: `${e.size * 4}px`,
+                    height: `${e.size * 4}px`,
+                  }}
+                >
+                  <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
+                </div>
+              )
+            }),
+          )}
         </div>
       )}
 
-      <div className="grid lg:grid-cols-[1fr_2fr] gap-0">
-        {/* Left Side - Pinned Text Content */}
-        <div
-          ref={leftTextRef}
-          className="lg:sticky lg:top-0 h-screen flex items-start justify-center pl-4 lg:pl-6 pt-16"
-        >
-          <LeftTextContent currentStep={currentStep} />
-        </div>
+      {/* Conditional Layout based on isMobileLayout */}
+      {isMobileLayout ? (
+        // Mobile/Tablet Layout: Single column, titles rendered within MediaGrid
+        <MediaGrid isMobile={isMobileLayout} />
+      ) : (
+        // Desktop Layout: Two columns with sticky text
+        <div className="grid lg:grid-cols-[1fr_2fr] gap-0">
+          {/* Left Side - Pinned Text Content */}
+          <div
+            id="portfolio-left-text" // Add ID for GSAP selection
+            className="lg:sticky lg:top-0 h-screen flex items-start justify-center pl-4 lg:pl-6 pt-16"
+          >
+            <LeftTextContent currentStep={currentStep} />
+          </div>
 
-        {/* Right Side - Scrolling Media */}
-        <MediaGrid />
-      </div>
+          {/* Right Side - Scrolling Media */}
+          <MediaGrid isMobile={isMobileLayout} />
+        </div>
+      )}
 
       {/* Channel Management Section */}
       <ChannelManagementSection />

@@ -50,7 +50,9 @@ const useCustomCursor = () => {
   }
 }
 
-const MediaGrid = React.memo(() => {
+const sectionTitles = ["WEBSITES", "VIDEO PRODUCTION", "BRANDED", "EVENTS"]
+
+const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
@@ -181,17 +183,17 @@ const MediaGrid = React.memo(() => {
   ]
 
   const getImageSize = (size: string) => {
-  switch (size) {
-    case "large":
-      return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
-    case "reel":
-      return "w-[15rem] h-[26.7rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]";
-    case "youtube":
-      return "w-[21rem] h-[11.82rem] sm:w-[28rem] sm:h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]";
-    default:
-      return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]";
+    switch (size) {
+      case "large":
+        return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]"
+      case "reel":
+        return "w-[15rem] h-[26.7rem] sm:w-[18rem] sm:h-[32rem] lg:w-[22.5rem] lg:h-[40rem]"
+      case "youtube":
+        return "w-[21rem] h-[11.82rem] sm:w-[28rem] sm:h-[15.75rem] lg:w-[34rem] lg:h-[19.1rem]"
+      default:
+        return "w-[21rem] h-[12.8rem] sm:w-[30rem] sm:h-[18.3rem] lg:w-[34rem] lg:h-[20.73rem]"
+    }
   }
-}
 
   const getHorizontalPosition = (position: string) => {
     switch (position) {
@@ -372,12 +374,32 @@ const MediaGrid = React.memo(() => {
     )
   }
 
+  let lastRenderedSectionIndex = -1 // To track when to render a new title
+
   return (
     <div className="px-2 sm:px-6 lg:px-8">
-      <div className="py-12 space-y-12">
-        {allMedia.map((media, index) => (
-          <MediaBlock key={`media-${index}`} media={media} index={index} />
-        ))}
+      <div className="py-0 lg:py-12 space-y-12">
+        {allMedia.map((media, index) => {
+          const shouldRenderTitle = isMobile && media.sectionIndex !== lastRenderedSectionIndex
+          lastRenderedSectionIndex = media.sectionIndex // Update for next iteration
+
+          return (
+            <React.Fragment key={`section-${media.sectionIndex}-media-${index}`}>
+              {shouldRenderTitle && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-8" 
+                >
+                  <h3 className="text-3xl md:text-4xl font-bold text-white">{sectionTitles[media.sectionIndex]}</h3>
+                </motion.div>
+              )}
+              <MediaBlock media={media} index={index} />
+            </React.Fragment>
+          )
+        })}
       </div>
     </div>
   )
