@@ -30,19 +30,19 @@ const ChannelManagementSection = () => {
     {
       name: "IIFA",
       url: "https://www.youtube.com/@iifa/featured",
-      thumbnail: "/images/impactpure.svg", // Using existing SVG for now
+      thumbnail: "/images/iifa.svg",
       description: "International Indian Film Academy",
     },
     {
       name: "Crewcut",
       url: "https://www.youtube.com/@crewcut_",
-      thumbnail: "/images/savefarm.svg", // Using existing SVG for now
+      thumbnail: "/images/crew.svg",
       description: "Podcast by Jim Sarbh & guests",
     },
     {
       name: "Sreesanth Nair",
       url: "https://www.youtube.com/@sreesanthnair09",
-      thumbnail: "/images/impactpure.svg", // Using existing SVG for now
+      thumbnail: "/images/shree.svg",
       description: "Sreesanth Nair’s podcast hub",
     },
   ]
@@ -110,7 +110,7 @@ const ChannelManagementSection = () => {
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="mt-32 mx-6 relative"
-      // Removed onMouseMove from section, as it's now per-item
+    // Removed onMouseMove from section, as it's now per-item
     >
       {/* Section Header with same animation as other sections */}
       <div className="text-center mb-20">
@@ -118,7 +118,7 @@ const ChannelManagementSection = () => {
           <motion.h3 custom={0} variants={textVariants} className="text-4xl md:text-5xl font-bold mb-6">
             CHANNEL MANAGEMENT & OPTIMIZATION
           </motion.h3>
-          <motion.p custom={1} variants={textVariants} className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <motion.p custom={1} variants={textVariants} className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
             Content strategy and optimization for top YouTube channels
           </motion.p>
         </motion.div>
@@ -133,7 +133,7 @@ const ChannelManagementSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
-            className="relative group cursor-pointer overflow-hidden rounded-xl" // Added rounded-xl and overflow-hidden
+            className="relative group cursor-pointer overflow-hidden" // Added rounded-xl and overflow-hidden
             onMouseEnter={() => handleChannelMouseEnter(channel.name)}
             onMouseLeave={handleChannelMouseLeave}
             onMouseMove={handleChannelItemMouseMove} // Attach mouse move listener here
@@ -141,41 +141,40 @@ const ChannelManagementSection = () => {
             {/* Background Thumbnail */}
             <AnimatePresence>
               {hoveredChannel === channel.name && (
-                <motion.img
-                  key="thumbnail-bg"
-                  src={channel.thumbnail}
-                  alt={`${channel.name} thumbnail`}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full object-cover z-0" // z-0 to be behind text
-                />
+                <>
+                  <motion.img
+                    key="thumbnail-bg"
+                    src={channel.thumbnail}
+                    alt={`${channel.name} thumbnail`}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover z-0" // z-0 to be behind text
+                  />
+                  {/* Overlay for readability */}
+                  <motion.div
+                    key="overlay"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-black/50 z-[1]" // Semi-transparent black overlay
+                  />
+                </>
               )}
             </AnimatePresence>
 
             {/* Text Content (Name, Description, Arrow) */}
-            <div className="relative z-10 flex items-center justify-between py-8 px-6 border-b border-white/10 group-hover:border-white/30 transition-colors duration-500">
+            <div className="relative z-10 flex items-center justify-between py-8 px-6 group-hover: transition-colors duration-500">
               <div>
-                <h4 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none group-hover:text-white transition-all duration-500">
+                <h4 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none group-hover:text-white transition-all duration-500">
                   {channel.name}
                 </h4>
-                <p className="text-gray-400 text-lg mt-2 group-hover:text-gray-300 transition-colors duration-300">
+                <p className="text-base md:text-lg text-gray-400 mt-2 group-hover:text-gray-300 transition-colors duration-300">
                   {channel.description}
                 </p>
               </div>
-
-              {/* Subtle Arrow Indicator */}
-              <motion.div
-                animate={{
-                  x: hoveredChannel === channel.name ? 10 : 0,
-                  opacity: hoveredChannel === channel.name ? 1 : 0.5,
-                }}
-                transition={{ duration: 0.3 }}
-                className="text-2xl text-gray-400"
-              >
-                →
-              </motion.div>
             </div>
 
             {/* Custom Animated Cursor Button */}
