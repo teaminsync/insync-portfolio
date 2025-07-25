@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, useScroll } from "framer-motion"
+import { useScroll } from "framer-motion"
 import Hero from "@/components/sections/hero"
 import About from "@/components/sections/about"
 import Services from "@/components/sections/services"
@@ -68,12 +68,6 @@ export default function Home() {
       </main>
 
       <Footer />
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50 origin-left"
-        style={{ scaleX: scrollYProgress }}
-      />
     </div>
   )
 }
