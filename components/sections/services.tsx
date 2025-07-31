@@ -118,38 +118,46 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
     let mainTrigger: ScrollTrigger | null = null
 
     // Determine the early distance for the main trigger's calculation
-    // This will be 0 for tablets, effectively making mainTrigger start from initialPosition
-    const earlyDistanceForMainTrigger = isTablet ? 0 : (finalPosition - initialPosition) * 0.3
+    // This will be different for tablets vs desktop
+    const earlyDistanceForMainTrigger = isTablet
+      ? (finalPosition - initialPosition) * 0.5 // Tablets: 50% of total distance in early phase
+      : (finalPosition - initialPosition) * 0.3 // Desktop: 30% of total distance in early phase
 
-    if (!isTablet) {
-      // Only create earlyTrigger if NOT a tablet (i.e., for desktop)
-      earlyTrigger = ScrollTrigger.create({
-        trigger: container,
-        start: "top 75%", // This will only apply to desktop now
-        end: "top top",
-        scrub: 1,
-        onUpdate: (self) => {
-          const progress = self.progress
-          const currentX = initialPosition + earlyDistanceForMainTrigger * progress // Use the conditional earlyDistance
-          gsap.set(cards, {
-            x: currentX,
-            force3D: true,
-          })
-        },
-      })
-    }
+    // Adjust initial position for tablets to start further behind
+    const adjustedInitialPosition = isTablet
+      ? containerWidth + cardWidth * 1.5 
+      : initialPosition // Desktop: Use the original position
+
+    // Set initial position with the adjusted value
+    gsap.set(cards, { x: adjustedInitialPosition })
+
+    // Create earlyTrigger for both desktop AND tablet (but with different behaviors)
+    earlyTrigger = ScrollTrigger.create({
+      trigger: container,
+      start: isTablet ? "top 85%" : "top 75%", // Tablets start trigger slightly later
+      end: "top top",
+      scrub: 1,
+      onUpdate: (self) => {
+        const progress = self.progress
+        const currentX = adjustedInitialPosition + earlyDistanceForMainTrigger * progress
+        gsap.set(cards, {
+          x: currentX,
+          force3D: true,
+        })
+      },
+    })
 
     mainTrigger = ScrollTrigger.create({
       trigger: container,
       start: "top top", // Main trigger always starts when section hits top
-      end: `+=${Math.abs(finalPosition - initialPosition) * 3}`,
+      end: `+=${Math.abs(finalPosition - adjustedInitialPosition) * 3}`, // Use adjustedInitialPosition
       pin: true,
       scrub: 1,
       anticipatePin: 1,
       onUpdate: (self) => {
         const progress = self.progress
-        // Calculate the actual start position for the main animation based on whether early phase ran
-        const calculatedStartPosition = initialPosition + earlyDistanceForMainTrigger
+        // Calculate the actual start position for the main animation based on early phase
+        const calculatedStartPosition = adjustedInitialPosition + earlyDistanceForMainTrigger
         const remainingDistance = finalPosition - calculatedStartPosition
         const currentX = calculatedStartPosition + remainingDistance * progress
 
@@ -169,7 +177,7 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
     setTimeout(() => ScrollTrigger.refresh(), 100)
 
     return () => {
-      if (earlyTrigger) earlyTrigger.kill() // Conditionally kill
+      if (earlyTrigger) earlyTrigger.kill() // Always kill since we now create it for both tablet and desktop
       if (mainTrigger) mainTrigger.kill()
       window.removeEventListener("resize", handleResize)
     }
@@ -450,7 +458,7 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
             style={{
               width: "max-content",
               height: "450px",
-              marginRight: isTablet ? "0px" : "400px",
+              marginRight: isTablet ? "100px" : "400px",
             }}
           >
             {services.map((service, index) => (
