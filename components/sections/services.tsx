@@ -11,11 +11,16 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const Services = () => {
+interface ServicesProps {
+  isTouchDevice: boolean // Prop to indicate if the device is touch-enabled
+}
+
+const Services = ({ isTouchDevice }: ServicesProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [isTablet, setIsTablet] = useState(false)
   const [isHeaderInView, setIsHeaderInView] = useState(false)
 
   const services = [
@@ -62,16 +67,17 @@ const Services = () => {
     setIsHeaderInView(isInView)
   }, [isInView])
 
-  // Check for mobile on mount and resize
+  // Check for mobile/tablet on mount and resize
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    const updateDeviceType = () => {
+      const width = window.innerWidth
+      setIsMobile(width < 640)
+      setIsTablet(width >= 640 && width < 1024)
     }
 
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-
-    return () => window.removeEventListener("resize", checkMobile)
+    updateDeviceType()
+    window.addEventListener("resize", updateDeviceType)
+    return () => window.removeEventListener("resize", updateDeviceType)
   }, [])
 
   useEffect(() => {
@@ -108,38 +114,44 @@ const Services = () => {
     // Set initial position
     gsap.set(cards, { x: initialPosition })
 
-    // Phase 1: Early scroll trigger (25% visible) - No pinning
-    const earlyTrigger = ScrollTrigger.create({
-      trigger: container,
-      start: "top 75%",
-      end: "top top",
-      scrub: 1,
-      onUpdate: (self) => {
-        const progress = self.progress
-        const earlyDistance = (finalPosition - initialPosition) * 0.3
-        const currentX = initialPosition + earlyDistance * progress
+    let earlyTrigger: ScrollTrigger | null = null
+    let mainTrigger: ScrollTrigger | null = null
 
-        gsap.set(cards, {
-          x: currentX,
-          force3D: true,
-        })
-      },
-    })
+    // Determine the early distance for the main trigger's calculation
+    // This will be 0 for tablets, effectively making mainTrigger start from initialPosition
+    const earlyDistanceForMainTrigger = isTablet ? 0 : (finalPosition - initialPosition) * 0.3
 
-    // Phase 2: Main pinning trigger
-    const mainTrigger = ScrollTrigger.create({
+    if (!isTablet) {
+      // Only create earlyTrigger if NOT a tablet (i.e., for desktop)
+      earlyTrigger = ScrollTrigger.create({
+        trigger: container,
+        start: "top 75%", // This will only apply to desktop now
+        end: "top top",
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress
+          const currentX = initialPosition + earlyDistanceForMainTrigger * progress // Use the conditional earlyDistance
+          gsap.set(cards, {
+            x: currentX,
+            force3D: true,
+          })
+        },
+      })
+    }
+
+    mainTrigger = ScrollTrigger.create({
       trigger: container,
-      start: "top top",
+      start: "top top", // Main trigger always starts when section hits top
       end: `+=${Math.abs(finalPosition - initialPosition) * 3}`,
       pin: true,
       scrub: 1,
       anticipatePin: 1,
       onUpdate: (self) => {
         const progress = self.progress
-        const earlyDistance = (finalPosition - initialPosition) * 0.3
-        const startPosition = initialPosition + earlyDistance
-        const remainingDistance = finalPosition - startPosition
-        const currentX = startPosition + remainingDistance * progress
+        // Calculate the actual start position for the main animation based on whether early phase ran
+        const calculatedStartPosition = initialPosition + earlyDistanceForMainTrigger
+        const remainingDistance = finalPosition - calculatedStartPosition
+        const currentX = calculatedStartPosition + remainingDistance * progress
 
         gsap.set(cards, {
           x: currentX,
@@ -148,26 +160,33 @@ const Services = () => {
       },
     })
 
-    // Handle resize
     const handleResize = () => {
       ScrollTrigger.refresh()
     }
 
     window.addEventListener("resize", handleResize)
 
-    // Refresh ScrollTrigger after setup
     setTimeout(() => ScrollTrigger.refresh(), 100)
 
-    // Cleanup
     return () => {
-      earlyTrigger.kill()
-      mainTrigger.kill()
+      if (earlyTrigger) earlyTrigger.kill() // Conditionally kill
+      if (mainTrigger) mainTrigger.kill()
       window.removeEventListener("resize", handleResize)
     }
-  }, [isMobile])
+  }, [isMobile, isTablet, services.length]) // Dependencies remain the same
 
   // Individual card component with responsive interactions
-  const ServiceCard = ({ service, index, isMobile }: { service: any; index: number; isMobile: boolean }) => {
+  const ServiceCard = ({
+    service,
+    index,
+    isMobile,
+    isTouchDevice,
+  }: {
+    service: any
+    index: number
+    isMobile: boolean
+    isTouchDevice: boolean
+  }) => {
     const [isFlipped, setIsFlipped] = useState(false)
 
     // Responsive card dimensions
@@ -178,19 +197,22 @@ const Services = () => {
 
     // Handle interaction based on device type
     const handleInteraction = () => {
-      if (isMobile) {
+      // If it's a touch device (mobile, tablet, or desktop touchscreen), allow tap to flip
+      if (isTouchDevice) {
         setIsFlipped(!isFlipped)
       }
     }
 
     const handleMouseEnter = () => {
-      if (!isMobile) {
+      // If it's NOT a touch device (traditional desktop/laptop), allow hover to flip
+      if (!isTouchDevice) {
         setIsFlipped(true)
       }
     }
 
     const handleMouseLeave = () => {
-      if (!isMobile) {
+      // If it's NOT a touch device, allow hover to unflip
+      if (!isTouchDevice) {
         setIsFlipped(false)
       }
     }
@@ -385,7 +407,7 @@ const Services = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="flex justify-center"
             >
-              <ServiceCard service={service} index={index} isMobile={isMobile} />
+              <ServiceCard service={service} index={index} isMobile={isMobile} isTouchDevice={isTouchDevice} />
             </motion.div>
           ))}
         </div>
@@ -428,11 +450,17 @@ const Services = () => {
             style={{
               width: "max-content",
               height: "450px",
-              marginRight: "400px",
+              marginRight: isTablet ? "0px" : "400px",
             }}
           >
             {services.map((service, index) => (
-              <ServiceCard key={service.title} service={service} index={index} isMobile={isMobile} />
+              <ServiceCard
+                key={service.title}
+                service={service}
+                index={index}
+                isMobile={isMobile}
+                isTouchDevice={isTouchDevice}
+              />
             ))}
           </div>
         </div>
@@ -447,7 +475,9 @@ const Services = () => {
           transition={{ duration: 0.6 }}
           className="text-gray-600"
         >
-          <span className="text-xs md:text-sm">[Hover on cards to view details]</span>
+          <span className="text-xs md:text-sm">
+            {isTouchDevice ? "[Tap on cards to view details]" : "[Hover on cards to view details]"}
+          </span>
         </motion.div>
       </div>
     </section>

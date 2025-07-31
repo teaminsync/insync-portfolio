@@ -61,7 +61,7 @@ export default function Home() {
       <main>
         <Hero />
         <About />
-        <Services />
+        <Services isTouchDevice={isTouchDevice} /> {/* Pass isTouchDevice to Services */}
         <Portfolio />
         <Process />
         <Contact />
