@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { ScrollTrigger } from "gsap/ScrollTrigger" // ScrollTrigger type is imported directly
 
 // Register GSAP plugin
 if (typeof window !== "undefined") {
@@ -13,6 +13,8 @@ if (typeof window !== "undefined") {
 const Process = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [currentStep, setCurrentStep] = useState(0)
+  const [isMounted, setIsMounted] = useState(false) // Add isMounted state
+  const [isMobile, setIsMobile] = useState(false) // Add isMobile state
 
   const steps = [
     {
@@ -37,44 +39,82 @@ const Process = () => {
     },
   ]
 
+  // Effect to set isMounted and check for mobile on initial render and resize
   useEffect(() => {
-    if (!containerRef.current) return
+    setIsMounted(true)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // Assuming 768px is the breakpoint for mobile behavior
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted || !containerRef.current) return // Ensure component is mounted and ref is available
 
     const container = containerRef.current
+    let tl: gsap.core.Timeline | null = null
+    // Corrected type to simply 'ScrollTrigger'
+    let scrollTriggerInstance: ScrollTrigger | null | undefined = null
 
-    // Create GSAP timeline for step progression
-    const tl = gsap.timeline({
+    // Cleanup function to kill existing ScrollTrigger and clear GSAP styles
+    const cleanupGsap = () => {
+      if (scrollTriggerInstance) {
+        scrollTriggerInstance.kill()
+        scrollTriggerInstance = null
+      }
+      if (tl) {
+        tl.kill()
+        tl = null
+      }
+      // Clear any inline styles applied by GSAP pinning
+      gsap.set(container, { clearProps: "all" })
+    }
+
+    // Call cleanup before setting up new triggers
+    cleanupGsap()
+
+    // Setup new ScrollTrigger
+    tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: "top top",
-        end: "+=400%", // 4 full viewport heights for 4 steps
-        scrub: 1, // Smooth scrubbing tied to scroll
-        pin: true, // Pin the section during animation
+        end: `+=${container.offsetHeight * steps.length}`, // Use actual height for end calculation
+        scrub: 1,
+        pin: true,
         anticipatePin: 1,
         onUpdate: (self) => {
-          // Update current step based on progress
           const progress = self.progress
-          const newStep = Math.min(Math.floor(progress * 4), 3)
+          const newStep = Math.min(Math.floor(progress * steps.length), steps.length - 1)
           setCurrentStep(newStep)
+        },
+        // Recalculate end value on refresh - no direct assignment to self.end
+        onRefresh: (self) => {
+          // The 'end' value is re-evaluated by ScrollTrigger.refresh() based on the string provided
+          // when the ScrollTrigger was created. No need to re-assign it here.
         },
       },
     })
+    scrollTriggerInstance = tl.scrollTrigger // Store the instance
 
     // Simple timeline that just tracks progress - no DOM rotation
     tl.to(
       {},
       {
-        duration: 4, // 4 steps
+        duration: steps.length, // Duration based on number of steps
         ease: "none",
       },
       0,
     )
 
+    // Initial refresh after setup
+    setTimeout(() => ScrollTrigger.refresh(), 100)
+
     return () => {
-      // Cleanup ScrollTrigger
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      cleanupGsap()
     }
-  }, [])
+  }, [isMounted, isMobile, steps.length]) // Re-run when isMounted or isMobile changes
 
   // Calculate which dots should be visible based on rotation
   const getDotVisibility = (dotPosition: number, currentRotation: number) => {
