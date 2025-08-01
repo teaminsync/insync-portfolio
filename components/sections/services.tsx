@@ -1,10 +1,12 @@
 "use client"
 
-import { useRef, useEffect, useState } from "react"
+import React from "react"
+
+import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { motion, useInView } from "framer-motion"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import HeroAnimation from "@/components/hero-animation" // Import the HeroAnimation component
+import HeroAnimation from "@/components/hero-animation"
 import { getImageUrl } from "@/lib/cloudinary"
 
 // Register GSAP plugin
@@ -13,7 +15,7 @@ if (typeof window !== "undefined") {
 }
 
 interface ServicesProps {
-  isTouchDevice: boolean // Prop to indicate if the device is touch-enabled
+  isTouchDevice: boolean
 }
 
 const Services = ({ isTouchDevice }: ServicesProps) => {
@@ -22,353 +24,204 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
   const headerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [isTablet, setIsTablet] = useState(false)
-  const [isHeaderInView, setIsHeaderInView] = useState(false)
 
-  const services = [
-    {
-      title: "WEBSITE DEVELOPMENT",
-      background: "#E5DAF6", // Soft lavender
-      logo: getImageUrl("webdev_etgeom"),
-      description:
-        "We build modern, responsive websites using Next.js, React, and Tailwind CSS. Optimized for SEO, performance, and brand impact.",
-    },
-    {
-      title: "CONTENT STRATEGY",
-      background: "#FFD2F3", // Soft pink
-      logo: getImageUrl("content_th8phd"),
-      description:
-        "We shape your messaging and visuals around audience behavior and platform trends to create content that connects and performs.",
-    },
-    {
-      title: "VIDEO PRODUCTION",
-      background: "#D0F0EC", // Soft mint
-      logo: getImageUrl("video_zy6ewo"),
-      description:
-        "End-to-end video production from concept to final edit, delivering cinematic, story-driven content for brands and creators.",
-    },
-    {
-      title: "SCRIPT & COPYWRITING",
-      background: "#F8D4C7", // Soft peach
-      logo: getImageUrl("script_ecfmvd"),
-      description:
-        "Clear, persuasive copy tailored for websites, ads, and brand campaigns. Written to engage and convert.",
-    },
-    {
-      title: "PERSONAL BRANDING",
-      background: "#FCDCA6", // Warm cream
-      logo: getImageUrl("branding_dqlvlc"),
-      description:
-        "Helping founders and creators define their digital identity through strategy-led design, content, and visibility.",
-    },
-  ]
+  // Memoize services data to prevent recreation on every render
+  const services = useMemo(
+    () => [
+      {
+        title: "WEBSITE DEVELOPMENT",
+        background: "#E5DAF6",
+        logo: getImageUrl("webdev_etgeom"),
+        description:
+          "We build modern, responsive websites using Next.js, React, and Tailwind CSS. Optimized for SEO, performance, and brand impact.",
+      },
+      {
+        title: "CONTENT STRATEGY",
+        background: "#FFD2F3",
+        logo: getImageUrl("content_th8phd"),
+        description:
+          "We shape your messaging and visuals around audience behavior and platform trends to create content that connects and performs.",
+      },
+      {
+        title: "VIDEO PRODUCTION",
+        background: "#D0F0EC",
+        logo: getImageUrl("video_zy6ewo"),
+        description:
+          "End-to-end video production from concept to final edit, delivering cinematic, story-driven content for brands and creators.",
+      },
+      {
+        title: "SCRIPT & COPYWRITING",
+        background: "#F8D4C7",
+        logo: getImageUrl("script_ecfmvd"),
+        description:
+          "Clear, persuasive copy tailored for websites, ads, and brand campaigns. Written to engage and convert.",
+      },
+      {
+        title: "PERSONAL BRANDING",
+        background: "#FCDCA6",
+        logo: getImageUrl("branding_dqlvlc"),
+        description:
+          "Helping founders and creators define their digital identity through strategy-led design, content, and visibility.",
+      },
+    ],
+    [],
+  )
 
   const isInView = useInView(headerRef, { once: true, margin: "-100px" })
 
-  useEffect(() => {
-    setIsHeaderInView(isInView)
-  }, [isInView])
+  // Memoize device detection function
+  const detectMobileDevice = useCallback(() => {
+    return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }, [])
 
-  // Check for mobile/tablet on mount and resize
+  // Memoize layout category function
+  const getLayoutCategory = useCallback((width: number, isMobileDevice: boolean) => {
+    if (isMobileDevice || width < 640) return "mobile"
+    if (width < 1024) return "tablet"
+    return "desktop"
+  }, [])
+
+  // Device detection and layout management
   useEffect(() => {
+    const isMobileDevice = detectMobileDevice()
+    let previousLayout = getLayoutCategory(window.innerWidth, isMobileDevice)
+
     const updateDeviceType = () => {
       const width = window.innerWidth
-      setIsMobile(width < 640)
-      setIsTablet(width >= 640 && width < 1024)
+      const currentLayout = getLayoutCategory(width, isMobileDevice)
+
+      if (currentLayout !== previousLayout) {
+        setTimeout(() => window.location.reload(), 150)
+        return
+      }
+
+      setIsMobile(isMobileDevice || width < 640)
+      setIsTablet(!isMobileDevice && width >= 640 && width < 1024)
+      previousLayout = currentLayout
     }
 
     updateDeviceType()
-    window.addEventListener("resize", updateDeviceType)
-    return () => window.removeEventListener("resize", updateDeviceType)
-  }, [])
 
+    // Debounced resize handler
+    let resizeTimeout: NodeJS.Timeout
+    const debouncedResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(updateDeviceType, 100)
+    }
+
+    const handleOrientationChange = () => {
+      setTimeout(updateDeviceType, 200)
+    }
+
+    window.addEventListener("resize", debouncedResize)
+    window.addEventListener("orientationchange", handleOrientationChange)
+
+    return () => {
+      clearTimeout(resizeTimeout)
+      window.removeEventListener("resize", debouncedResize)
+      window.removeEventListener("orientationchange", handleOrientationChange)
+    }
+  }, [detectMobileDevice, getLayoutCategory])
+
+  // GSAP animation setup - only for non-mobile
   useEffect(() => {
     if (!containerRef.current || !cardsRef.current || isMobile) return
 
     const container = containerRef.current
     const cards = cardsRef.current
 
-    // Responsive card dimensions
+    // Memoized card dimensions calculation
     const getCardDimensions = () => {
       const screenWidth = window.innerWidth
-      if (screenWidth >= 1024) {
-        return { cardWidth: 320, cardGap: 32 } // Desktop
-      } else if (screenWidth >= 768) {
-        return { cardWidth: 280, cardGap: 24 } // Tablet
-      } else {
-        return { cardWidth: 240, cardGap: 16 } // Mobile (fallback)
-      }
+      if (screenWidth >= 1024) return { cardWidth: 320, cardGap: 32 }
+      if (screenWidth >= 768) return { cardWidth: 280, cardGap: 24 }
+      return { cardWidth: 240, cardGap: 16 }
     }
 
     const { cardWidth, cardGap } = getCardDimensions()
     const containerWidth = window.innerWidth
     const totalCardsWidth = (cardWidth + cardGap) * services.length - cardGap
-
-    // Responsive padding
     const padding = containerWidth >= 1024 ? 40 : containerWidth >= 768 ? 24 : 16
 
-    // Initial position: First card at extreme right, others extend to the right
     const initialPosition = containerWidth - cardWidth - padding
-
-    // Final position: All cards visible, last card at left edge
     const finalPosition = -(totalCardsWidth - containerWidth + padding)
 
-    // Set initial position
-    gsap.set(cards, { x: initialPosition })
-
-    let earlyTrigger: ScrollTrigger | null = null
-    let mainTrigger: ScrollTrigger | null = null
-
-    // Determine the early distance for the main trigger's calculation
-    // This will be different for tablets vs desktop
     const earlyDistanceForMainTrigger = isTablet
-      ? (finalPosition - initialPosition) * 0.5 // Tablets: 50% of total distance in early phase
-      : (finalPosition - initialPosition) * 0.3 // Desktop: 30% of total distance in early phase
+      ? (finalPosition - initialPosition) * 0.5
+      : (finalPosition - initialPosition) * 0.3
 
-    // Adjust initial position for tablets to start further behind
-    const adjustedInitialPosition = isTablet ? containerWidth + cardWidth * 1.5 : initialPosition // Desktop: Use the original position
+    const adjustedInitialPosition = isTablet ? containerWidth + cardWidth * 1.5 : initialPosition
 
-    // Set initial position with the adjusted value
     gsap.set(cards, { x: adjustedInitialPosition })
 
-    // Create earlyTrigger for both desktop AND tablet (but with different behaviors)
-    earlyTrigger = ScrollTrigger.create({
+    // Create triggers with unique IDs for better cleanup
+    const earlyTrigger = ScrollTrigger.create({
+      id: "services-early",
       trigger: container,
-      start: isTablet ? "top 85%" : "top 75%", // Tablets start trigger slightly later
+      start: isTablet ? "top 85%" : "top 75%",
       end: "top top",
       scrub: 1,
       onUpdate: (self) => {
         const progress = self.progress
         const currentX = adjustedInitialPosition + earlyDistanceForMainTrigger * progress
-        gsap.set(cards, {
-          x: currentX,
-          force3D: true,
-        })
+        gsap.set(cards, { x: currentX, force3D: true })
       },
     })
 
-    mainTrigger = ScrollTrigger.create({
+    const mainTrigger = ScrollTrigger.create({
+      id: "services-main",
       trigger: container,
-      start: "top top", // Main trigger always starts when section hits top
-      end: `+=${Math.abs(finalPosition - adjustedInitialPosition) * 3}`, // Use adjustedInitialPosition
+      start: "top top",
+      end: `+=${Math.abs(finalPosition - adjustedInitialPosition) * 3}`,
       pin: true,
       scrub: 1,
       anticipatePin: 1,
       onUpdate: (self) => {
         const progress = self.progress
-        // Calculate the actual start position for the main animation based on early phase
         const calculatedStartPosition = adjustedInitialPosition + earlyDistanceForMainTrigger
         const remainingDistance = finalPosition - calculatedStartPosition
         const currentX = calculatedStartPosition + remainingDistance * progress
-
-        gsap.set(cards, {
-          x: currentX,
-          force3D: true,
-        })
+        gsap.set(cards, { x: currentX, force3D: true })
       },
     })
 
-    const handleResize = () => {
-      ScrollTrigger.refresh()
-    }
-
+    // Single resize handler
+    const handleResize = () => ScrollTrigger.refresh()
     window.addEventListener("resize", handleResize)
 
-    setTimeout(() => ScrollTrigger.refresh(), 100)
+    // Delayed refresh
+    const refreshTimeout = setTimeout(() => ScrollTrigger.refresh(), 100)
 
     return () => {
-      if (earlyTrigger) earlyTrigger.kill() // Always kill since we now create it for both tablet and desktop
-      if (mainTrigger) mainTrigger.kill()
+      clearTimeout(refreshTimeout)
+      earlyTrigger?.kill()
+      mainTrigger?.kill()
       window.removeEventListener("resize", handleResize)
     }
-  }, [isMobile, isTablet, services.length]) // Dependencies remain the same
+  }, [isMobile, isTablet, services.length])
 
-  // Individual card component with responsive interactions
-  const ServiceCard = ({
-    service,
-    index,
-    isMobile,
-    isTouchDevice,
-  }: {
-    service: any
-    index: number
-    isMobile: boolean
-    isTouchDevice: boolean
-  }) => {
-    const [isFlipped, setIsFlipped] = useState(false)
-
-    // Responsive card dimensions
-    const cardDimensions = {
-      width: isMobile ? "280px" : "320px",
-      height: isMobile ? "350px" : "400px",
-    }
-
-    // Handle interaction based on device type
-    const handleInteraction = () => {
-      // If it's a touch device (mobile, tablet, or desktop touchscreen), allow tap to flip
-      if (isTouchDevice) {
-        setIsFlipped(!isFlipped)
-      }
-    }
-
-    const handleMouseEnter = () => {
-      // If it's NOT a touch device (traditional desktop/laptop), allow hover to flip
-      if (!isTouchDevice) {
-        setIsFlipped(true)
-      }
-    }
-
-    const handleMouseLeave = () => {
-      // If it's NOT a touch device, allow hover to unflip
-      if (!isTouchDevice) {
-        setIsFlipped(false)
-      }
-    }
-
-    return (
-      <div
-        className="service-card flex-shrink-0"
-        style={{
-          perspective: "1200px",
-          width: cardDimensions.width,
-          height: cardDimensions.height,
-        }}
-        onClick={handleInteraction}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <motion.div
-          className="relative w-full h-full cursor-pointer"
-          style={{
-            transformStyle: "preserve-3d",
-            transformOrigin: "center center",
-          }}
-          animate={{
-            rotateY: isFlipped ? 180 : 0,
-            scale: isFlipped ? 1.02 : 1,
-          }}
-          transition={{
-            duration: 0.8,
-            ease: [0.25, 0.46, 0.45, 0.94],
-            type: "tween",
-          }}
-        >
-          {/* Front Side */}
-          <div
-            className="absolute inset-0 w-full h-full rounded-2xl md:rounded-3xl shadow-lg"
-            style={{
-              backgroundColor: service.background,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            {/* Top Strip - Responsive spacing */}
-            <div className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 flex items-center justify-between">
-              <h3 className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px]">
-                {service.title}
-              </h3>
-              <img
-                src={service.logo || "/placeholder.svg"}
-                alt={service.title}
-                className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
-              />
-            </div>
-
-            {/* Bottom Strip - Responsive spacing */}
-            <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 flex items-end justify-between">
-              <div className="flex items-center gap-4">
-                {/* Service logo */}
-                <img
-                  src={service.logo || "/placeholder.svg"}
-                  alt={service.title}
-                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
-                />
-                <span className="text-[0.25rem] md:text-[0.35rem] font-medium text-black tracking-tight leading-none">
-                  BIZ - {101 + index}
-                </span>
-                {/* Placeholder for your InSync logo */}
-                <img
-                  src={getImageUrl("logo_qrfjdl") || "/placeholder.svg"} // Use a small placeholder for your logo
-                  alt="InSync Logo"
-                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain" // Adjust size as needed
-                />
-              </div>
-
-              <h3
-                className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px] text-right"
-                style={{ transform: "rotate(180deg)" }}
-              >
-                {service.title}
-              </h3>
-            </div>
-
-            {/* Center - Responsive logo size */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img
-                src={service.logo || "/placeholder.svg"}
-                alt={service.title}
-                className="w-20 h-20 md:w-24 md:h-24 object-contain"
-              />
-            </div>
-          </div>
-
-          {/* Back Side */}
-          <div
-            className="absolute inset-0 w-full h-full rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg flex flex-col justify-between"
-            style={{
-              backgroundColor: service.background,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            {/* Top Section */}
-            <div>
-              {/* Service Number */}
-              <div className="mb-6 md:mb-8">
-                <span className="text-black/60 text-sm md:text-base font-medium">
-                  ({String(index + 1).padStart(2, "0")})
-                </span>
-              </div>
-
-              {/* Service Title */}
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-black leading-tight text-left">{service.title}</h3>
-              </div>
-            </div>
-
-            {/* Bottom Section - Description */}
-            <div className="text-left">
-              <p className="text-black/80 text-sm md:text-base leading-relaxed">{service.description}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    )
-  }
-
-  // Define textVariants like in hero section
-  const textVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.2,
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99],
-      },
+  // Memoized text variants
+  const textVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 50 },
+      visible: (i: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+          delay: i * 0.2,
+          duration: 0.8,
+          ease: [0.6, -0.05, 0.01, 0.99],
+        },
+      }),
     }),
-  }
+    [],
+  )
 
-  // Mobile layout - vertical stack
+  // Mobile layout
   if (isMobile) {
     return (
       <section id="services" className="relative py-16">
-        {/* Hero Animation Background */}
         <HeroAnimation />
-        {/* Header */}
         <div className="text-center px-6 relative z-10">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -390,7 +243,6 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
           </motion.p>
         </div>
 
-        {/* Mobile Instruction - Centered between header and cards */}
         <div className="text-center px-6 mb-8 mt-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -403,7 +255,6 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
           </motion.div>
         </div>
 
-        {/* Mobile Cards - Vertical Stack - Properly Centered */}
         <div className="px-6 space-y-6 relative z-10">
           {services.map((service, index) => (
             <motion.div
@@ -422,17 +273,15 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
     )
   }
 
-  // Desktop/Tablet layout - horizontal scroll
+  // Desktop/Tablet layout
   return (
     <section ref={containerRef} id="services" className="relative min-h-screen sticky top-0 z-10">
-      {/* Hero Animation Background */}
       <HeroAnimation />
-      {/* Header Section */}
       <div className="relative z-10 pt-16 pb-4 md:pt-20 md:pb-6">
         <motion.div
           ref={headerRef}
           initial="hidden"
-          animate={isHeaderInView ? "visible" : "hidden"}
+          animate={isInView ? "visible" : "hidden"}
           className="text-center px-6"
         >
           <motion.h2
@@ -448,7 +297,6 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
         </motion.div>
       </div>
 
-      {/* Horizontal Scrolling Cards Container */}
       <div className="relative z-10" style={{ height: "calc(100vh - 140px)" }}>
         <div className="h-full flex items-start justify-center pt-4 md:pt-8">
           <div
@@ -473,7 +321,6 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
         </div>
       </div>
 
-      {/* Desktop Instructions - Better middle ground positioning */}
       <div className="absolute bottom-14 md:bottom-24 left-1/2 transform -translate-x-1/2 text-center z-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -490,5 +337,169 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
     </section>
   )
 }
+
+// Memoized ServiceCard component
+const ServiceCard = React.memo(
+  ({
+    service,
+    index,
+    isMobile,
+    isTouchDevice,
+  }: {
+    service: any
+    index: number
+    isMobile: boolean
+    isTouchDevice: boolean
+  }) => {
+    const [isFlipped, setIsFlipped] = useState(false)
+
+    // Memoized card dimensions
+    const cardDimensions = useMemo(
+      () => ({
+        width: isMobile ? "280px" : "320px",
+        height: isMobile ? "350px" : "400px",
+      }),
+      [isMobile],
+    )
+
+    const handleInteraction = useCallback(() => {
+      if (isTouchDevice) {
+        setIsFlipped((prev) => !prev)
+      }
+    }, [isTouchDevice])
+
+    const handleMouseEnter = useCallback(() => {
+      if (!isTouchDevice) {
+        setIsFlipped(true)
+      }
+    }, [isTouchDevice])
+
+    const handleMouseLeave = useCallback(() => {
+      if (!isTouchDevice) {
+        setIsFlipped(false)
+      }
+    }, [isTouchDevice])
+
+    // Memoized animation transition
+    const flipTransition = useMemo(
+      () => ({
+        duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        type: "tween" as const,
+      }),
+      [],
+    )
+
+    return (
+      <div
+        className="service-card flex-shrink-0"
+        style={{
+          perspective: "1200px",
+          width: cardDimensions.width,
+          height: cardDimensions.height,
+        }}
+        onClick={handleInteraction}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <motion.div
+          className="relative w-full h-full cursor-pointer"
+          style={{
+            transformStyle: "preserve-3d",
+            transformOrigin: "center center",
+          }}
+          animate={{
+            rotateY: isFlipped ? 180 : 0,
+            scale: isFlipped ? 1.02 : 1,
+          }}
+          transition={flipTransition}
+        >
+          {/* Front Side */}
+          <div
+            className="absolute inset-0 w-full h-full rounded-2xl md:rounded-3xl shadow-lg"
+            style={{
+              backgroundColor: service.background,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <div className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 flex items-center justify-between">
+              <h3 className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px]">
+                {service.title}
+              </h3>
+              <img
+                src={service.logo || "/placeholder.svg"}
+                alt={service.title}
+                className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
+              />
+            </div>
+
+            <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 flex items-end justify-between">
+              <div className="flex items-center gap-4">
+                <img
+                  src={service.logo || "/placeholder.svg"}
+                  alt={service.title}
+                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
+                />
+                <span className="text-[0.25rem] md:text-[0.35rem] font-medium text-black tracking-tight leading-none">
+                  BIZ - {101 + index}
+                </span>
+                <img
+                  src={getImageUrl("logo_qrfjdl") || "/placeholder.svg"}
+                  alt="InSync Logo"
+                  className="w-2.5 h-2.5 md:w-3 h-3 object-contain"
+                />
+              </div>
+
+              <h3
+                className="text-[0.5rem] md:text-[0.625rem] font-medium text-black leading-tight max-w-[140px] md:max-w-[180px] text-right"
+                style={{ transform: "rotate(180deg)" }}
+              >
+                {service.title}
+              </h3>
+            </div>
+
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src={service.logo || "/placeholder.svg"}
+                alt={service.title}
+                className="w-20 h-20 md:w-24 md:h-24 object-contain"
+              />
+            </div>
+          </div>
+
+          {/* Back Side */}
+          <div
+            className="absolute inset-0 w-full h-full rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg flex flex-col justify-between"
+            style={{
+              backgroundColor: service.background,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <div>
+              <div className="mb-6 md:mb-8">
+                <span className="text-black/60 text-sm md:text-base font-medium">
+                  ({String(index + 1).padStart(2, "0")})
+                </span>
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold text-black leading-tight text-left">{service.title}</h3>
+              </div>
+            </div>
+            <div className="text-left">
+              <p className="text-black/80 text-sm md:text-base leading-relaxed">{service.description}</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    )
+  },
+)
+
+ServiceCard.displayName = "ServiceCard"
 
 export default Services
