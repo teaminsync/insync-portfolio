@@ -2,70 +2,70 @@
 
 import { useRef, useEffect, useState } from "react"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
+import { getImageUrl } from "@/lib/cloudinary"
 
 // Define the full set of decorative elements outside the component
 const decorativeElementsData = [
   {
     col: 0,
     items: [
-      { top: "-12%", size: 36, src: "elmnt1" },
-      { top: "47%", size: 32, src: "elmnt4" },
-      { top: "87%", size: 28, src: "elmnt2" },
+      { top: "-12%", size: 36, src: "elmnt1_q2gbvh" },
+      { top: "47%", size: 32, src: "elmnt4_l95xm1" },
+      { top: "87%", size: 28, src: "elmnt2_spftr7" },
     ],
   },
   {
     col: 1,
     items: [
-      { top: "11%", size: 32, src: "elmnt3" },
-      { top: "62%", size: 36, src: "elmnt5" },
+      { top: "11%", size: 32, src: "elmnt3_bgkljv" },
+      { top: "62%", size: 36, src: "elmnt5_mernov" },
     ],
   },
   {
     col: 2,
     items: [
-      { top: "-12%", size: 36, src: "elmnt6" },
-      { top: "47%", size: 28, src: "elmnt1" },
-      { top: "87%", size: 32, src: "elmnt4" },
+      { top: "-12%", size: 36, src: "elmnt6_thgphw" },
+      { top: "47%", size: 28, src: "elmnt1_q2gbvh" },
+      { top: "87%", size: 32, src: "elmnt4_l95xm1" },
     ],
   },
   {
     col: 3,
     items: [
-      { top: "3%", size: 36, src: "elmnt2" },
-      { top: "67%", size: 32, src: "elmnt6" },
+      { top: "3%", size: 36, src: "elmnt2_spftr7" },
+      { top: "67%", size: 32, src: "elmnt6_thgphw" },
     ],
   },
   {
     col: 4,
     items: [
-      { top: "-13%", size: 32, src: "elmnt3" },
-      { top: "42%", size: 36, src: "elmnt4" },
-      { top: "89%", size: 28, src: "elmnt1" },
+      { top: "-13%", size: 32, src: "elmnt3_bgkljv" },
+      { top: "42%", size: 36, src: "elmnt4_l95xm1" },
+      { top: "89%", size: 28, src: "elmnt1_q2gbvh" },
     ],
   },
   {
     col: 5,
     items: [
-      { top: "3%", size: 36, src: "elmnt5" },
-      { top: "62%", size: 32, src: "elmnt2" },
+      { top: "3%", size: 36, src: "elmnt5_mernov" },
+      { top: "62%", size: 32, src: "elmnt2_spftr7" },
     ],
   },
   {
     col: 6,
     items: [
-      { top: "-13%", size: 36, src: "elmnt6" },
-      { top: "32%", size: 36, src: "elmnt3" },
-      { top: "82%", size: 32, src: "elmnt4" },
+      { top: "-13%", size: 36, src: "elmnt6_thgphw" },
+      { top: "32%", size: 36, src: "elmnt3_bgkljv" },
+      { top: "82%", size: 32, src: "elmnt4_l95xm1" },
     ],
   },
-];
-
+]
 
 // Define which column indices to show for each number of active columns
 const columnIndicesToShow = {
-  3: [0, 1, 2], 
-  5: [0, 1, 2, 3, 4], 
-  7: [0, 1, 2, 3, 4, 5, 6], 
+  3: [0, 1, 2],
+  5: [0, 1, 2, 3, 4],
+  7: [0, 1, 2, 3, 4, 5, 6],
 }
 
 const About = () => {
@@ -148,7 +148,7 @@ const About = () => {
                   height: `${e.size * 4}px`,
                 }}
               >
-                <img src={`/images/${e.src}.svg`} alt="" className="w-full h-full object-contain" />
+                <img src={getImageUrl(e.src) || "/placeholder.svg"} alt="" className="w-full h-full object-contain" />
               </div>
             )
           }),
@@ -180,7 +180,7 @@ const About = () => {
                 }}
               >
                 <img
-                  src="images/arrow.svg"
+                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(90deg)" }}
@@ -201,7 +201,7 @@ const About = () => {
                 }}
               >
                 <img
-                  src="images/arrow.svg"
+                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(-180deg)" }}
@@ -221,8 +221,8 @@ const About = () => {
             {/* Subheading */}
             <div className="space-y-6 text-base sm:text-lg text-gray-300 leading-relaxed max-w-5xl mx-auto relative z-10">
               <motion.p custom={1} variants={textVariants}>
-                Strategy is at the core of everything we do. Your goals shape the direction, inspire our creativity,
-                and lead to digital solutions that look great, work fast, and grow with you.
+                Strategy is at the core of everything we do. Your goals shape the direction, inspire our creativity, and
+                lead to digital solutions that look great, work fast, and grow with you.
               </motion.p>
             </div>
 
@@ -241,7 +241,11 @@ const About = () => {
                   ease: "easeInOut",
                 }}
               >
-                <img src="images/arrow.svg" alt="Arrow" className="w-12 h-12 md:w-16 md:h-16" />
+                <img
+                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
+                  alt="Arrow"
+                  className="w-12 h-12 md:w-16 md:h-16"
+                />
               </motion.div>
 
               {/* Bottom Right Arrow - Rotate 270 degrees clockwise from bottom-left */}
@@ -258,7 +262,7 @@ const About = () => {
                 }}
               >
                 <img
-                  src="images/arrow.svg"
+                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(-90deg)" }}

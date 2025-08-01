@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion"
 import VideoPlayer from "./video-player"
 import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
+import { getImageUrl, getVideoUrl } from "@/lib/cloudinary"
 
 // Custom hook for cursor management
 const useCustomCursor = () => {
@@ -63,7 +64,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     // Websites section (3 images: 0-2)
     {
       type: "image",
-      src: "/images/savefarm.svg",
+      src: getImageUrl("savefarm_koopat"),
       alt: "Save Farm",
       link: "https://savefarm.in",
       size: "large",
@@ -72,7 +73,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "image",
-      src: "/images/impactpure.svg",
+      src: getImageUrl("impactpure_l4fs1v"),
       alt: "IMPACTPURE",
       link: "https://impactpure.vercel.app",
       size: "large",
@@ -81,7 +82,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "image",
-      src: "/images/elegant.svg",
+      src: getImageUrl("elegant_ytmxy8"),
       alt: "Elegant Atmos",
       link: "#",
       size: "large",
@@ -92,7 +93,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     // Video Production section (4 videos: 3-6)
     {
       type: "video",
-      videoSrc: "/images/domin8.webm",
+      videoSrc: getVideoUrl("domin8_jt6qhc"),
       coverImage: null,
       alt: "Domin8",
       link: "#",
@@ -104,8 +105,8 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "video",
-      videoSrc: "/images/shantanu.webm",
-      coverImage: "/images/shantanu.jpg",
+      videoSrc: getVideoUrl("shantanu_pmdfns"),
+      coverImage: getImageUrl("shantanu_frymx7"),
       alt: "Shantanu",
       link: "https://www.youtube.com/watch?v=3LEKpf01n6U",
       size: "youtube",
@@ -114,7 +115,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "video",
-      videoSrc: "/images/domin82.webm",
+      videoSrc: getVideoUrl("domin82_ths7eo"),
       coverImage: null,
       alt: "Domin8",
       link: "#",
@@ -124,8 +125,8 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "video",
-      videoSrc: "/images/podcast.webm",
-      coverImage: "/images/podcast.jpg",
+      videoSrc: getVideoUrl("podcast_xdqdu9"),
+      coverImage: getImageUrl("podcast_zkicop"),
       alt: "Podcast",
       link: "https://www.youtube.com/watch?v=z3sR8tzKq0g&t=1184s",
       size: "youtube",
@@ -136,7 +137,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     // Branded section (3 videos: 7-9)
     {
       type: "video",
-      videoSrc: "/images/mpi.webm",
+      videoSrc: getVideoUrl("mpi_abj8bx"),
       coverImage: null,
       alt: "MPI",
       link: "#",
@@ -148,7 +149,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "video",
-      videoSrc: "/images/vimxritviz.webm",
+      videoSrc: getVideoUrl("vimxritviz_ptifpb"),
       coverImage: null,
       alt: "Vim India x Ritviz",
       link: "#",
@@ -158,7 +159,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     },
     {
       type: "video",
-      videoSrc: "/images/impactpure.webm",
+      videoSrc: getVideoUrl("impactpure_hqleoc"),
       coverImage: null,
       alt: "IMPACTPURE Brand Reel",
       link: "#",
@@ -170,7 +171,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     // Events section (1 video: 10)
     {
       type: "video",
-      videoSrc: "/images/event.webm",
+      videoSrc: getVideoUrl("event_dtu0po"),
       coverImage: null,
       alt: "Rukmini - Marathi Play",
       link: "https://www.instagram.com/reel/CzQuC4-oROp/",
@@ -391,7 +392,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6 }}
-                  className="text-center mb-8" 
+                  className="text-center mb-8"
                 >
                   <h3 className="text-3xl md:text-4xl font-bold text-white">{sectionTitles[media.sectionIndex]}</h3>
                 </motion.div>

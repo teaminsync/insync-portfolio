@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from "framer-motion"
 import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
+import { getImageUrl } from "@/lib/cloudinary"
 
 const ChannelManagementSection = () => {
   const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
@@ -30,20 +31,20 @@ const ChannelManagementSection = () => {
     {
       name: "IIFA",
       url: "https://www.youtube.com/@iifa/featured",
-      thumbnail: "/images/iifa.svg",
+      thumbnail: getImageUrl("iifa_gwhrfx"),
       description: "International Indian Film Academy",
     },
     {
       name: "Crewcut",
       url: "https://www.youtube.com/@crewcut_",
-      thumbnail: "/images/crew.svg",
+      thumbnail: getImageUrl("crew_f9reuc"),
       description: "Podcast by Jim Sarbh & guests",
     },
     {
       name: "Sreesanth Nair",
       url: "https://www.youtube.com/@sreesanthnair09",
-      thumbnail: "/images/shree.svg",
-      description: "Sreesanth Nair’s podcast hub",
+      thumbnail: getImageUrl("shree_hd6o0e"),
+      description: "Sreesanth Nair's podcast hub",
     },
   ]
 
@@ -110,7 +111,7 @@ const ChannelManagementSection = () => {
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="mt-32 mx-6 relative"
-    // Removed onMouseMove from section, as it's now per-item
+      // Removed onMouseMove from section, as it's now per-item
     >
       {/* Section Header with same animation as other sections */}
       <div className="text-center mb-20">

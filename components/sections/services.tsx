@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import HeroAnimation from "@/components/hero-animation" // Import the HeroAnimation component
+import { getImageUrl } from "@/lib/cloudinary"
 
 // Register GSAP plugin
 if (typeof window !== "undefined") {
@@ -27,35 +28,35 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
     {
       title: "WEBSITE DEVELOPMENT",
       background: "#E5DAF6", // Soft lavender
-      logo: "/images/webdev.svg",
+      logo: getImageUrl("webdev_etgeom"),
       description:
         "We build modern, responsive websites using Next.js, React, and Tailwind CSS. Optimized for SEO, performance, and brand impact.",
     },
     {
       title: "CONTENT STRATEGY",
       background: "#FFD2F3", // Soft pink
-      logo: "/images/content.svg",
+      logo: getImageUrl("content_th8phd"),
       description:
         "We shape your messaging and visuals around audience behavior and platform trends to create content that connects and performs.",
     },
     {
       title: "VIDEO PRODUCTION",
       background: "#D0F0EC", // Soft mint
-      logo: "/images/video.svg",
+      logo: getImageUrl("video_zy6ewo"),
       description:
         "End-to-end video production from concept to final edit, delivering cinematic, story-driven content for brands and creators.",
     },
     {
       title: "SCRIPT & COPYWRITING",
       background: "#F8D4C7", // Soft peach
-      logo: "/images/script.svg",
+      logo: getImageUrl("script_ecfmvd"),
       description:
         "Clear, persuasive copy tailored for websites, ads, and brand campaigns. Written to engage and convert.",
     },
     {
       title: "PERSONAL BRANDING",
       background: "#FCDCA6", // Warm cream
-      logo: "/images/branding.svg",
+      logo: getImageUrl("branding_dqlvlc"),
       description:
         "Helping founders and creators define their digital identity through strategy-led design, content, and visibility.",
     },
@@ -124,9 +125,7 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
       : (finalPosition - initialPosition) * 0.3 // Desktop: 30% of total distance in early phase
 
     // Adjust initial position for tablets to start further behind
-    const adjustedInitialPosition = isTablet
-      ? containerWidth + cardWidth * 1.5 
-      : initialPosition // Desktop: Use the original position
+    const adjustedInitialPosition = isTablet ? containerWidth + cardWidth * 1.5 : initialPosition // Desktop: Use the original position
 
     // Set initial position with the adjusted value
     gsap.set(cards, { x: adjustedInitialPosition })
@@ -289,7 +288,7 @@ const Services = ({ isTouchDevice }: ServicesProps) => {
                 </span>
                 {/* Placeholder for your InSync logo */}
                 <img
-                  src="images/logo.svg" // Use a small placeholder for your logo
+                  src={getImageUrl("logo_qrfjdl") || "/placeholder.svg"} // Use a small placeholder for your logo
                   alt="InSync Logo"
                   className="w-2.5 h-2.5 md:w-3 h-3 object-contain" // Adjust size as needed
                 />
