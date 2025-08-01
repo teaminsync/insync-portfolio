@@ -8,63 +8,64 @@ const decorativeElementsData = [
   {
     col: 0,
     items: [
-      { top: "5%", size: 36, src: "elmnt1" },
-      { top: "45%", size: 32, src: "elmnt4" },
-      { top: "85%", size: 28, src: "elmnt2" },
+      { top: "-12%", size: 36, src: "elmnt1" },
+      { top: "47%", size: 32, src: "elmnt4" },
+      { top: "87%", size: 28, src: "elmnt2" },
     ],
   },
   {
     col: 1,
     items: [
-      { top: "23%", size: 32, src: "elmnt3" },
-      { top: "60%", size: 36, src: "elmnt5" },
+      { top: "11%", size: 32, src: "elmnt3" },
+      { top: "62%", size: 36, src: "elmnt5" },
     ],
   },
   {
     col: 2,
     items: [
-      { top: "5%", size: 36, src: "elmnt6" },
-      { top: "45%", size: 28, src: "elmnt1" },
-      { top: "85%", size: 32, src: "elmnt4" },
+      { top: "-12%", size: 36, src: "elmnt6" },
+      { top: "47%", size: 28, src: "elmnt1" },
+      { top: "87%", size: 32, src: "elmnt4" },
     ],
   },
   {
     col: 3,
     items: [
-      { top: "20%", size: 36, src: "elmnt2" },
-      { top: "65%", size: 32, src: "elmnt6" },
+      { top: "3%", size: 36, src: "elmnt2" },
+      { top: "67%", size: 32, src: "elmnt6" },
     ],
   },
   {
     col: 4,
     items: [
-      { top: "2%", size: 32, src: "elmnt3" },
-      { top: "40%", size: 36, src: "elmnt4" },
-      { top: "88%", size: 28, src: "elmnt1" },
+      { top: "-13%", size: 32, src: "elmnt3" },
+      { top: "42%", size: 36, src: "elmnt4" },
+      { top: "89%", size: 28, src: "elmnt1" },
     ],
   },
   {
     col: 5,
     items: [
-      { top: "20%", size: 36, src: "elmnt5" },
-      { top: "60%", size: 32, src: "elmnt2" },
+      { top: "3%", size: 36, src: "elmnt5" },
+      { top: "62%", size: 32, src: "elmnt2" },
     ],
   },
   {
     col: 6,
     items: [
-      { top: "2%", size: 36, src: "elmnt6" },
-      { top: "35%", size: 36, src: "elmnt3" },
-      { top: "80%", size: 32, src: "elmnt4" },
+      { top: "-13%", size: 36, src: "elmnt6" },
+      { top: "32%", size: 36, src: "elmnt3" },
+      { top: "82%", size: 32, src: "elmnt4" },
     ],
   },
-]
+];
+
 
 // Define which column indices to show for each number of active columns
 const columnIndicesToShow = {
-  3: [0, 1, 2], // For 3 columns, show first, middle, and last
-  5: [0, 1, 2, 3, 4], // For 5 columns, show first, second, middle, second-to-last, last
-  7: [0, 1, 2, 3, 4, 5, 6], // For 7 columns, show all
+  3: [0, 1, 2], 
+  5: [0, 1, 2, 3, 4], 
+  7: [0, 1, 2, 3, 4, 5, 6], 
 }
 
 const About = () => {

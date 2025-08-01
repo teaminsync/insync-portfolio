@@ -2,8 +2,8 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import HeroAnimation from "@/components/hero-animation" // Import the new component
-import HeroLottieAnimation from "@/components/hero-lottie-animation" // Import the new Lottie component
+import HeroAnimation from "@/components/hero-animation" 
+import HeroLottieAnimation from "@/components/hero-lottie-animation" 
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null)
