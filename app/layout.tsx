@@ -5,7 +5,7 @@ import "./globals.css"
 import SmoothScroll from "@/components/smooth-scroll"
 import ScrollRestoration from "@/components/scroll-restoration"
 import { Toaster } from "@/components/ui/toaster"
-import { CursorProvider } from "@/context/CursorContext" // Import CursorProvider
+import { CursorProvider } from "@/context/CursorContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
