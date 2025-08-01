@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
-import { getImageUrl } from "@/lib/cloudinary"
+import { getDecorativeImageUrl, getImageUrl } from "@/lib/cloudinary"
 
 // Define the full set of decorative elements outside the component
 const decorativeElementsData = [
@@ -129,7 +129,7 @@ const About = () => {
         borderBottomRightRadius: "60px 24px",
       }}
     >
-      {/* Decorative Elements */}
+      {/* Decorative Elements - Now using optimized sizes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {columnsToRender.map((column, i) =>
           column.items.map((e, j) => {
@@ -148,7 +148,12 @@ const About = () => {
                   height: `${e.size * 4}px`,
                 }}
               >
-                <img src={getImageUrl(e.src) || "/placeholder.svg"} alt="" className="w-full h-full object-contain" />
+                <img
+                  src={getDecorativeImageUrl(e.src, e.size * 4) || "/placeholder.svg"}
+                  alt=""
+                  className="w-full h-full object-contain"
+                  loading="lazy"
+                />
               </div>
             )
           }),
@@ -180,10 +185,11 @@ const About = () => {
                 }}
               >
                 <img
-                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
+                  src={getImageUrl("arrow_nzauxl", 64, 64) || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(90deg)" }}
+                  loading="lazy"
                 />
               </motion.div>
 
@@ -201,10 +207,11 @@ const About = () => {
                 }}
               >
                 <img
-                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
+                  src={getImageUrl("arrow_nzauxl", 64, 64) || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(-180deg)" }}
+                  loading="lazy"
                 />
               </motion.div>
             </div>
@@ -242,9 +249,10 @@ const About = () => {
                 }}
               >
                 <img
-                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
+                  src={getImageUrl("arrow_nzauxl", 64, 64) || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
+                  loading="lazy"
                 />
               </motion.div>
 
@@ -262,10 +270,11 @@ const About = () => {
                 }}
               >
                 <img
-                  src={getImageUrl("arrow_nzauxl") || "/placeholder.svg"}
+                  src={getImageUrl("arrow_nzauxl", 64, 64) || "/placeholder.svg"}
                   alt="Arrow"
                   className="w-12 h-12 md:w-16 md:h-16"
                   style={{ transform: "rotate(-90deg)" }}
+                  loading="lazy"
                 />
               </motion.div>
             </div>

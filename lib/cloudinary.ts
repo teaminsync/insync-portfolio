@@ -1,4 +1,4 @@
-// Cloudinary helper functions
+// Enhanced Cloudinary helper functions with responsive sizing
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 
 if (!CLOUD_NAME) {
@@ -11,16 +11,32 @@ export const getCloudinaryUrl = (type: "image" | "video", publicId: string, tran
     return `/placeholder.svg?height=400&width=400&text=Cloudinary+Not+Configured`
   }
 
-  // Use the public ID directly as it appears in your Cloudinary dashboard
   return `https://res.cloudinary.com/${CLOUD_NAME}/${type}/upload/${transformations}/${publicId}`
 }
 
 // Specific helpers for common use cases
-export const getImageUrl = (publicId: string) => getCloudinaryUrl("image", publicId)
-export const getVideoUrl = (publicId: string) => getCloudinaryUrl("video", publicId)
+export const getImageUrl = (publicId: string, width?: number, height?: number) => {
+  let transforms = "q_auto,f_auto"
 
-// For responsive images
-export const getResponsiveImageUrl = (publicId: string, width?: number) => {
-  const transforms = width ? `q_auto,f_auto,w_${width},c_scale` : "q_auto,f_auto,w_auto,c_scale"
+  if (width && height) {
+    transforms += `,w_${width},h_${height},c_fill`
+  } else if (width) {
+    transforms += `,w_${width},c_scale`
+  }
+
   return getCloudinaryUrl("image", publicId, transforms)
+}
+
+export const getVideoUrl = (publicId: string) => getCloudinaryUrl("video", publicId, "q_auto,f_auto")
+
+// For responsive images with specific dimensions
+export const getResponsiveImageUrl = (publicId: string, width: number, height?: number) => {
+  const h = height ? `,h_${height}` : ""
+  const transforms = `q_auto,f_auto,w_${width}${h},c_fill`
+  return getCloudinaryUrl("image", publicId, transforms)
+}
+
+// For decorative elements - small sizes
+export const getDecorativeImageUrl = (publicId: string, size = 144) => {
+  return getImageUrl(publicId, size, size)
 }

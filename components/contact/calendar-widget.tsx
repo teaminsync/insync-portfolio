@@ -1,20 +1,52 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import Cal, { getCalApi } from "@calcom/embed-react"
+import { useEffect, useRef, useState } from "react"
 import { useCursorContext } from "@/context/CursorContext"
 
 const CalendarWidget = () => {
   const calWidgetRef = useRef<HTMLDivElement>(null)
   const { setIsInteractiveElementHovered } = useCursorContext()
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
-  // Cal.com setup
+  // Intersection Observer to load Cal.com only when visible
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isLoaded) {
+            setIsVisible(true)
+          }
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "100px",
+      },
+    )
+
+    if (calWidgetRef.current) {
+      observer.observe(calWidgetRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [isLoaded])
+
+  // Load Cal.com dynamically only when visible
+  useEffect(() => {
+    if (!isVisible || isLoaded) return
+
     let isMounted = true
 
-    const initCal = async () => {
+    const loadCalWidget = async () => {
       try {
+        // Dynamic import to reduce initial bundle size
+        const { getCalApi } = await import("@calcom/embed-react")
+
+        if (!isMounted) return
+
         const cal = await getCalApi({ namespace: "30min" })
+
         if (isMounted) {
           cal("ui", {
             theme: "dark",
@@ -25,18 +57,19 @@ const CalendarWidget = () => {
             hideEventTypeDetails: false,
             layout: "month_view",
           })
+          setIsLoaded(true)
         }
       } catch (error) {
-        console.error("Failed to initialize Cal.com:", error)
+        console.error("Failed to load Cal.com:", error)
       }
     }
 
-    initCal()
+    loadCalWidget()
 
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [isVisible, isLoaded])
 
   // Cursor interaction handlers
   const handleCalMouseEnter = () => {
@@ -62,23 +95,28 @@ const CalendarWidget = () => {
 
       <div
         ref={calWidgetRef}
-        className="overflow-hidden"
+        className="overflow-hidden min-h-[600px] bg-gray-100 rounded-lg flex items-center justify-center"
         onMouseEnter={handleCalMouseEnter}
         onMouseLeave={handleCalMouseLeave}
       >
-        <Cal
-          namespace="30min"
-          calLink="insync-solutions/30min"
-          style={{
-            width: "100%",
-            height: "600px",
-            overflow: "scroll",
-          }}
-          config={{
-            layout: "month_view",
-            theme: "dark",
-          }}
-        />
+        {!isLoaded ? (
+          <div className="text-center p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading calendar...</p>
+          </div>
+        ) : (
+          <div className="w-full h-[600px]">
+            {/* Cal.com embed will be loaded here */}
+            <iframe
+              src="https://cal.com/insync-solutions/30min"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              title="Schedule a call"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
     </div>
   )
