@@ -95,14 +95,14 @@ const CalendarWidget = () => {
 
       <div
         ref={calWidgetRef}
-        className="overflow-hidden min-h-[600px] bg-gray-100 rounded-lg flex items-center justify-center"
+        className="overflow-hidden min-h-[600px] bg-[#0F0F0F] rounded-lg flex items-center justify-center"
         onMouseEnter={handleCalMouseEnter}
         onMouseLeave={handleCalMouseLeave}
       >
         {!isLoaded ? (
-          <div className="text-center p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading calendar...</p>
+          <div className="text-center p-8 h-full flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4D4D4] mx-auto mb-4"></div>
+            <p className="text-[#D4D4D4]">Connecting to calendar...</p>
           </div>
         ) : (
           <div className="w-full h-[600px]">
