@@ -24,14 +24,14 @@ const ContactMethods = () => {
     {
       icon: Instagram,
       label: "Instagram",
-      value: "@insync.solutions",
-      href: "https://instagram.com/insync.solutions",
+      value: "@lets.insync",
+      href: "https://www.instagram.com/lets.insync/",
     },
     {
       icon: MapPin,
       label: "Location",
       value: "Mumbai, Maharashtra",
-      href: "#",
+      href: "https://maps.app.goo.gl/GbkBsyXPB63KUsyq5",
     },
   ]
 

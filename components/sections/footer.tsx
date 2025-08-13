@@ -24,7 +24,7 @@ const Footer = () => {
     },
     {
       name: "Instagram",
-      href: "https://instagram.com/insync.solutions",
+      href: "https://www.instagram.com/lets.insync/",
       icon: Instagram,
       color: "hover:text-pink-400",
     },
