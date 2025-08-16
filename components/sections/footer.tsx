@@ -18,7 +18,7 @@ const Footer = () => {
   const socialLinks = [
     {
       name: "LinkedIn",
-      href: "https://linkedin.com/company/insync-solutions",
+      href: "https://www.linkedin.com/company/letsinsync",
       icon: Linkedin,
       color: "hover:text-blue-400",
     },
