@@ -1,7 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUp, Linkedin, Instagram, Mail } from "lucide-react"
+import { ArrowUp, Linkedin, Instagram} from "lucide-react"
+import { FaBehance } from "react-icons/fa"
+import { SiFiverr, SiUpwork, SiDribbble, SiX } from "react-icons/si"
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -29,10 +31,34 @@ const Footer = () => {
       color: "hover:text-pink-400",
     },
     {
-      name: "Mail",
-      href: "mailto:insyncsolutions06@gmail.com",
-      icon: Mail,
-      color: "hover:text-gray-400",
+      name: "Behance",
+      href: "https://www.behance.net/letsinsync",
+      icon: FaBehance,
+      color: "hover:text-blue-500",
+    },
+    {
+      name: "Fiverr",
+      href: "https://www.fiverr.com/s/YRkXXQl",
+      icon: SiFiverr,
+      color: "hover:text-green-400",
+    },
+    {
+      name: "Upwork",
+      href: "https://www.upwork.com/agencies/1957757546664155208/",
+      icon: SiUpwork,
+      color: "hover:text-green-500",
+    },
+    {
+      name: "Dribbble",
+      href: "https://dribbble.com/insync-solutions",
+      icon: SiDribbble,
+      color: "hover:text-pink-500",
+    },
+    {
+      name: "X",
+      href: "https://x.com/letsinsync",
+      icon: SiX,
+      color: "hover:text-gray-300",
     },
   ]
 
