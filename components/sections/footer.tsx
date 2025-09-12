@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUp, Linkedin, Instagram} from "lucide-react"
+import { ArrowUp, Linkedin, Instagram } from "lucide-react"
 import { FaBehance } from "react-icons/fa"
 import { SiFiverr, SiUpwork, SiDribbble, SiX } from "react-icons/si"
 
@@ -87,7 +87,7 @@ const Footer = () => {
               Crafting intelligent digital experiences through data driven design, content, and code, all powered by
               clear purpose and strategy.
             </p>
-            <div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center gap-2 sm:gap-4 mt-6 flex-wrap">
               {socialLinks.map((social) => (
                 <motion.a
                   key={social.name}
@@ -95,9 +95,9 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   whileTap={{ scale: 0.95 }}
-                  className={`p-3 bg-white/5 rounded-xl border border-white/10 transition-all duration-300 ${social.color} hover:border-white/20`}
+                  className={`p-2 sm:p-3 bg-white/5 rounded-xl border border-white/10 transition-all duration-300 ${social.color} hover:border-white/20`}
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </motion.a>
               ))}
             </div>
