@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Send } from "lucide-react"
 import { motion } from "framer-motion"
 import { useToast } from "@/hooks/use-toast"
+import { trackEvent } from "@/lib/fbpixel"
 
 interface FormData {
   name: string
@@ -96,6 +97,11 @@ const ContactForm = () => {
         const result = await response.json()
 
         if (result.success) {
+          trackEvent("ContactForm_Submit", {
+            projectType: formData.projectType,
+            budget: formData.budget,
+          })
+
           toast({
             title: "Message Sent!",
             description: "We'll get back to you soon.",

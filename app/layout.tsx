@@ -6,6 +6,7 @@ import SmoothScroll from "@/components/smooth-scroll"
 import ScrollRestoration from "@/components/scroll-restoration"
 import { Toaster } from "@/components/ui/toaster"
 import { CursorProvider } from "@/context/CursorContext" 
+import { fbqInit } from "@/lib/fbpixel"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -31,6 +32,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  if (typeof window !== "undefined") {
+    fbqInit()
+  }
+
   return (
     <html lang="en">
       <head>
@@ -65,6 +70,16 @@ export default function RootLayout({
         <meta name="theme-color" content="#F9F4EB" />
 
         <meta name="facebook-domain-verification" content="qvfq830vm2kdww4hrrbrrr3yjda9ra" />
+
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
       </head>
       <body className={`${inter.className} antialiased`}>
         <ScrollRestoration />

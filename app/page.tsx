@@ -11,11 +11,17 @@ import Contact from "@/components/sections/contact"
 import Footer from "@/components/sections/footer"
 import Navigation from "@/components/navigation"
 import CustomCursor from "@/components/custom-cursor"
+import { fbqInit, trackPageView } from "@/lib/fbpixel"
 import { getCalApi } from "@calcom/embed-react"
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
-  const [isTouchDevice, setIsTouchDevice] = useState(false) // State for touch detection
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+
+  useEffect(() => {
+    fbqInit()
+    trackPageView()
+  }, [])
 
   useEffect(() => {
     // Detect touch device
@@ -27,8 +33,8 @@ export default function Home() {
       }
     }
 
-    checkTouchDevice() // Initial check
-    window.addEventListener("resize", checkTouchDevice) // Re-check on resize
+    checkTouchDevice()
+    window.addEventListener("resize", checkTouchDevice)
 
     return () => {
       window.removeEventListener("resize", checkTouchDevice)
@@ -41,7 +47,7 @@ export default function Home() {
       cal("floatingButton", {
         calLink: "insync-solutions/30min",
         config: { layout: "month_view" },
-        buttonText: "LET’S SYNC UP",
+        buttonText: "LET'S SYNC UP",
         hideButtonIcon: false,
       })
       cal("ui", {
@@ -54,14 +60,13 @@ export default function Home() {
 
   return (
     <div className="bg-[#F9F4EB] text-white overflow-hidden">
-      {/* Conditionally render CustomCursor based on isTouchDevice */}
       {!isTouchDevice && <CustomCursor />}
       <Navigation />
 
       <main>
         <Hero />
         <About />
-        <Services isTouchDevice={isTouchDevice} /> {/* Pass isTouchDevice to Services */}
+        <Services isTouchDevice={isTouchDevice} />
         <Portfolio />
         <Process />
         <Contact />

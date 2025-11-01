@@ -3,6 +3,7 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Mail, Phone, Instagram, MapPin } from "lucide-react"
+import { trackEvent } from "@/lib/fbpixel"
 
 const ContactMethods = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -14,26 +15,36 @@ const ContactMethods = () => {
       label: "Email",
       value: "insyncsolutions06@gmail.com",
       href: "mailto:insyncsolutions06@gmail.com",
+      method: "Email",
     },
     {
       icon: Phone,
       label: "Phone",
       value: "+91 9082210545",
       href: "https://wa.me/+919082210545",
+      method: "Phone",
     },
     {
       icon: Instagram,
       label: "Instagram",
       value: "@lets.insync",
       href: "https://www.instagram.com/lets.insync/",
+      method: "Instagram",
     },
     {
       icon: MapPin,
       label: "Location",
       value: "Mumbai, Maharashtra",
       href: "https://maps.app.goo.gl/GbkBsyXPB63KUsyq5",
+      method: "Location",
     },
   ]
+
+  const handleContactClick = (method: string) => {
+    trackEvent("Contact_Click", {
+      method: method,
+    })
+  }
 
   return (
     <div ref={containerRef} className="space-y-4">
@@ -52,6 +63,7 @@ const ContactMethods = () => {
           href={method.href}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => handleContactClick(method.method)}
           initial={{ opacity: 0, x: 30 }}
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
           transition={{

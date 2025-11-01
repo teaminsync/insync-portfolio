@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from "react"
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion"
 import VideoPlayer from "./video-player"
-import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
+import { useCursorContext } from "@/context/CursorContext"
+import { trackEvent } from "@/lib/fbpixel"
 import { getImageUrl, getVideoUrl } from "@/lib/cloudinary"
 
 // Custom hook for cursor management
@@ -67,6 +68,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       src: getImageUrl("savefarm_koopat"),
       alt: "Save Farm",
       link: "https://savefarm.in",
+      projectId: "savefarm",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "left",
@@ -76,6 +78,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       src: getImageUrl("impactpure_l4fs1v"),
       alt: "IMPACTPURE",
       link: "https://impactpure.vercel.app",
+      projectId: "impactpure",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "right",
@@ -85,6 +88,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       src: getImageUrl("elegant_ytmxy8"),
       alt: "Elegant Atmos",
       link: "#",
+      projectId: "elegant-atmos",
       size: "large",
       sectionIndex: 0,
       horizontalPosition: "center",
@@ -97,6 +101,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "Domin8",
       link: "#",
+      projectId: "domin8",
       size: "reel",
       sectionIndex: 1,
       isTrigger: true,
@@ -109,6 +114,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: getImageUrl("shantanu_frymx7"),
       alt: "Shantanu",
       link: "https://www.youtube.com/watch?v=3LEKpf01n6U",
+      projectId: "shantanu",
       size: "youtube",
       sectionIndex: 1,
       horizontalPosition: "left",
@@ -119,6 +125,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "Domin8",
       link: "#",
+      projectId: "domin8-2",
       size: "reel",
       sectionIndex: 1,
       horizontalPosition: "center",
@@ -129,6 +136,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: getImageUrl("podcast_zkicop"),
       alt: "Podcast",
       link: "https://www.youtube.com/watch?v=z3sR8tzKq0g&t=1184s",
+      projectId: "podcast",
       size: "youtube",
       sectionIndex: 1,
       horizontalPosition: "right",
@@ -141,6 +149,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "MPI",
       link: "#",
+      projectId: "mpi",
       size: "reel",
       sectionIndex: 2,
       isTrigger: true,
@@ -153,6 +162,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "Vim India x Ritviz",
       link: "#",
+      projectId: "vim-ritviz",
       size: "reel",
       sectionIndex: 2,
       horizontalPosition: "right",
@@ -163,6 +173,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "IMPACTPURE Brand Reel",
       link: "#",
+      projectId: "impactpure-reel",
       size: "reel",
       sectionIndex: 2,
       horizontalPosition: "center",
@@ -175,6 +186,7 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
       coverImage: null,
       alt: "Rukmini - Marathi Play",
       link: "https://www.instagram.com/reel/CzQuC4-oROp/",
+      projectId: "rukmini-event",
       size: "reel",
       sectionIndex: 3,
       isTrigger: true,
@@ -238,10 +250,10 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     return <VideoPlayer media={media} index={index} />
   }
 
-  // Individual MediaBlock component with custom cursor
+  // Individual MediaBlock component with custom cursor and tracking
   const MediaBlock = ({ media, index }: { media: any; index: number }) => {
     const { isHovering, containerRef, x, y, handleMouseEnter, handleMouseLeave, handleMouseMove } = useCustomCursor()
-    const { setIsInteractiveElementHovered } = useCursorContext() // Use context
+    const { setIsInteractiveElementHovered } = useCursorContext()
 
     // Effect to communicate hover state to global cursor context
     useEffect(() => {
@@ -253,6 +265,13 @@ const MediaGrid = React.memo(({ isMobile }: { isMobile: boolean }) => {
     }, [isHovering, setIsInteractiveElementHovered])
 
     const handleCursorClick = () => {
+      if (media.projectId) {
+        trackEvent("Project_Click", {
+          project_id: media.projectId,
+          project_name: media.alt,
+        })
+      }
+
       if (media.link && media.link !== "#") {
         window.open(media.link, "_blank", "noopener,noreferrer")
       }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useCursorContext } from "@/context/CursorContext"
+import { trackEvent } from "@/lib/fbpixel"
 
 const CalendarWidget = () => {
   const calWidgetRef = useRef<HTMLDivElement>(null)
@@ -40,7 +41,6 @@ const CalendarWidget = () => {
 
     const loadCalWidget = async () => {
       try {
-        // Dynamic import to reduce initial bundle size
         const { getCalApi } = await import("@calcom/embed-react")
 
         if (!isMounted) return
@@ -71,7 +71,26 @@ const CalendarWidget = () => {
     }
   }, [isVisible, isLoaded])
 
-  // Cursor interaction handlers
+  useEffect(() => {
+    if (!isLoaded) return
+
+    const handleCalBooking = (event: MessageEvent) => {
+      // Cal.com sends booking confirmations via postMessage
+      if (event.data?.type === "booking.success" || event.data?.method === "bookingConfirmed") {
+        trackEvent("BookCall_Widget", {
+          widget_type: "calendar",
+          booking_confirmed: true,
+        })
+      }
+    }
+
+    window.addEventListener("message", handleCalBooking)
+
+    return () => {
+      window.removeEventListener("message", handleCalBooking)
+    }
+  }, [isLoaded])
+
   const handleCalMouseEnter = () => {
     setIsInteractiveElementHovered(true)
   }
@@ -80,7 +99,6 @@ const CalendarWidget = () => {
     setIsInteractiveElementHovered(false)
   }
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       setIsInteractiveElementHovered(false)
@@ -106,7 +124,6 @@ const CalendarWidget = () => {
           </div>
         ) : (
           <div className="w-full h-[600px]">
-            {/* Cal.com embed will be loaded here */}
             <iframe
               src="https://cal.com/insync-solutions/30min"
               width="100%"

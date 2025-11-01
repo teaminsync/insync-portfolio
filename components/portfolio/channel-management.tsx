@@ -4,16 +4,17 @@ import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from "framer-motion"
-import { useCursorContext } from "@/context/CursorContext" // Import useCursorContext
+import { useCursorContext } from "@/context/CursorContext"
 import { getImageUrl } from "@/lib/cloudinary"
+import { trackEvent } from "@/lib/fbpixel"
 
 const ChannelManagementSection = () => {
   const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
-  const hideGlobalCursorTimeoutRef = useRef<NodeJS.Timeout | null>(null) // Renamed for clarity
+  const hideGlobalCursorTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const { setIsInteractiveElementHovered } = useCursorContext() // Get the context setter
+  const { setIsInteractiveElementHovered } = useCursorContext()
 
   useEffect(() => {
     setIsMounted(true)
@@ -21,7 +22,6 @@ const ChannelManagementSection = () => {
 
   const isInView = useInView(headerRef, { once: true, margin: "-100px" })
 
-  // Motion values for tracking cursor within the hovered channel item
   const channelItemCursorX = useMotionValue(0)
   const channelItemCursorY = useMotionValue(0)
   const smoothChannelItemCursorX = useSpring(channelItemCursorX, { damping: 20, stiffness: 150 })
@@ -48,7 +48,6 @@ const ChannelManagementSection = () => {
     },
   ]
 
-  // Same text variants as Services and Portfolio sections
   const textVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
@@ -64,23 +63,21 @@ const ChannelManagementSection = () => {
 
   const handleChannelMouseEnter = (channelName: string) => {
     if (!isMounted) return
-    // Clear any pending hide timeout for global cursor
     if (hideGlobalCursorTimeoutRef.current) {
       clearTimeout(hideGlobalCursorTimeoutRef.current)
       hideGlobalCursorTimeoutRef.current = null
     }
     setHoveredChannel(channelName)
-    setIsInteractiveElementHovered(true) // Signal global cursor to hide
+    setIsInteractiveElementHovered(true)
   }
 
   const handleChannelMouseLeave = () => {
     if (!isMounted) return
-    setHoveredChannel(null) // Immediately hide the thumbnail and local cursor
-    // Start a timeout to show global cursor after a brief delay
+    setHoveredChannel(null)
     hideGlobalCursorTimeoutRef.current = setTimeout(() => {
-      setIsInteractiveElementHovered(false) // Signal global cursor to show
+      setIsInteractiveElementHovered(false)
       hideGlobalCursorTimeoutRef.current = null
-    }, 150) // Small delay to allow for quick re-entry
+    }, 150)
   }
 
   const handleChannelItemMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -89,18 +86,22 @@ const ChannelManagementSection = () => {
     const relativeX = e.clientX - rect.left
     const relativeY = e.clientY - rect.top
 
-    // Update cursor position relative to the channel item (offset by half button size)
-    channelItemCursorX.set(relativeX - 40) // Half of button width (80px / 2)
-    channelItemCursorY.set(relativeY - 40) // Half of button height (80px / 2)
+    channelItemCursorX.set(relativeX - 40)
+    channelItemCursorY.set(relativeY - 40)
   }
 
-  // Cleanup timeout on unmount
+  const handleChannelClick = (channelName: string) => {
+    trackEvent("Channel_Click", {
+      channel_name: channelName,
+    })
+  }
+
   useEffect(() => {
     return () => {
       if (hideGlobalCursorTimeoutRef.current) {
         clearTimeout(hideGlobalCursorTimeoutRef.current)
       }
-      setIsInteractiveElementHovered(false) // Ensure global cursor is visible on unmount
+      setIsInteractiveElementHovered(false)
     }
   }, [setIsInteractiveElementHovered])
 
@@ -111,9 +112,7 @@ const ChannelManagementSection = () => {
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="mt-32 mx-6 relative"
-      // Removed onMouseMove from section, as it's now per-item
     >
-      {/* Section Header with same animation as other sections */}
       <div className="text-center mb-20">
         <motion.div ref={headerRef} initial="hidden" animate={isInView ? "visible" : "hidden"} className="text-center">
           <motion.h3 custom={0} variants={textVariants} className="text-4xl md:text-5xl font-bold mb-6">
@@ -125,7 +124,6 @@ const ChannelManagementSection = () => {
         </motion.div>
       </div>
 
-      {/* Vertical Channel List */}
       <div className="max-w-4xl mx-auto space-y-12">
         {channels.map((channel, index) => (
           <motion.div
@@ -134,10 +132,10 @@ const ChannelManagementSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
-            className="relative group cursor-pointer overflow-hidden" // Added rounded-xl and overflow-hidden
+            className="relative group cursor-pointer overflow-hidden"
             onMouseEnter={() => handleChannelMouseEnter(channel.name)}
             onMouseLeave={handleChannelMouseLeave}
-            onMouseMove={handleChannelItemMouseMove} // Attach mouse move listener here
+            onMouseMove={handleChannelItemMouseMove}
           >
             {/* Background Thumbnail */}
             <AnimatePresence>
@@ -151,7 +149,7 @@ const ChannelManagementSection = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.05 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full object-cover z-0" // z-0 to be behind text
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                   />
                   {/* Overlay for readability */}
                   <motion.div
@@ -160,7 +158,7 @@ const ChannelManagementSection = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-black/50 z-[1]" // Semi-transparent black overlay
+                    className="absolute inset-0 bg-black/50 z-[1]"
                   />
                 </>
               )}
@@ -185,13 +183,14 @@ const ChannelManagementSection = () => {
                   href={channel.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => handleChannelClick(channel.name)}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0 }}
                   transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="absolute w-[80px] h-[80px] bg-white rounded-full flex flex-col items-center justify-center text-black text-sm font-medium leading-tight pointer-events-auto z-50"
                   style={{
-                    left: smoothChannelItemCursorX, // Use the same motion values
+                    left: smoothChannelItemCursorX,
                     top: smoothChannelItemCursorY,
                   }}
                 >

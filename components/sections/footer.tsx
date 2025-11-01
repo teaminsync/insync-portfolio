@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { ArrowUp, Linkedin, Instagram } from "lucide-react"
 import { FaBehance } from "react-icons/fa"
 import { SiFiverr, SiUpwork, SiDribbble, SiX } from "react-icons/si"
+import { trackEvent } from "@/lib/fbpixel"
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -62,6 +63,13 @@ const Footer = () => {
     },
   ]
 
+  const handleSocialClick = (socialName: string) => {
+    trackEvent("Social_Click", {
+      platform: socialName,
+      location: "footer",
+    })
+  }
+
   return (
     <footer
       className="relative bg-black text-white"
@@ -94,10 +102,11 @@ const Footer = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => handleSocialClick(social.name)}
                   whileTap={{ scale: 0.95 }}
                   className={`p-2 sm:p-3 bg-white/5 rounded-xl border border-white/10 transition-all duration-300 ${social.color} hover:border-white/20`}
                 >
-                  <social.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {social.icon && <social.icon className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </motion.a>
               ))}
             </div>
