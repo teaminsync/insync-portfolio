@@ -63,6 +63,8 @@ export default function RootLayout({
         {/* Resource hints for better loading */}
         <meta name="format-detection" content="telephone=no" />
         <meta name="theme-color" content="#F9F4EB" />
+
+        <meta name="facebook-domain-verification" content="qvfq830vm2kdww4hrrbrrr3yjda9ra" />
       </head>
       <body className={`${inter.className} antialiased`}>
         <ScrollRestoration />
